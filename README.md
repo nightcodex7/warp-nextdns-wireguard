@@ -171,13 +171,12 @@ After reboot:
 ```bash
 curl https://www.cloudflare.com/cdn-cgi/trace | grep warp
 nextdns status
-sudo wg
 ```
 
 ✅ Expected:
 
 - `warp=on`
-- NextDNS status: connected with your profile
+- running: NextDNS connected
 - WireGuard handshake active
 
 ---
