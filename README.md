@@ -1,32 +1,43 @@
 # WARP + NextDNS via WireGuard on Linux (Mint 22.1 Tested)
 
-> \*\*Project by \*\* **@nightcodex7**
+> **Project by** [@nightcodex7](https://github.com/nightcodex7)
+
+---
 
 ## 🌐 Overview
 
 This guide enables full Cloudflare WARP tunneling via WireGuard on Linux **with NextDNS integration** — giving you:
 
-- 🔐 **Encrypted Internet traffic** through Cloudflare WARP
-- 🛡️ **Private, customizable DNS filtering** via your own [NextDNS](https://nextdns.io) profile
-- 📶 Works on Wi-Fi, Ethernet, and mobile tethering
-- ⚙️ Lightweight: No GUI needed, headless-friendly
+- 🔐 **Encrypted Internet traffic** through Cloudflare WARP  
+- 🛡️ **Private, customizable DNS filtering** via your own [NextDNS](https://nextdns.io) profile  
+- 📶 Works on Wi-Fi, Ethernet, and mobile tethering  
+- ⚙️ Lightweight: No GUI needed, headless-friendly  
 
 Tested and stable on **Linux Mint 22.1 (Ubuntu-based)**, but adaptable to most modern Linux distros.
+
+---
+
+## ⚠️ Prerequisites
+
+Before starting this setup, make sure:
+
+- You already have **NextDNS CLI installed and configured**
+- Your `nextdns.conf` contains your **profile ID** and is working (test with `nextdns status`)
+- You are using **Linux Mint 22.1** or another modern systemd-based Linux distro
+- You have **basic terminal familiarity** and root/sudo access
 
 ---
 
 ## ❓ Why Use This
 
 ### ✅ WARP (Cloudflare)
-
-- Free VPN-like tunnel over WireGuard
-- Encrypts traffic, bypasses basic firewalls, masks IP (somewhat)
+- Free VPN-like tunnel over WireGuard  
+- Encrypts traffic, bypasses basic firewalls, masks IP (somewhat)  
 - Low latency, ideal for gaming or public Wi-Fi use
 
 ### ✅ NextDNS
-
-- DNS-level ad/tracker blocking
-- Parental controls, analytics, and threat protection
+- DNS-level ad/tracker blocking  
+- Parental controls, analytics, and threat protection  
 - Fully customizable from your NextDNS dashboard
 
 ### 💡 Combined Benefit
@@ -66,21 +77,27 @@ chmod +x wgcf
 
 ### ✏️ 2. Edit the WireGuard Profile
 
+The WireGuard config created by `wgcf` points to Cloudflare DNS by default.
+
+Since we're using NextDNS instead, edit the config:
+
 ```bash
 nano wgcf-profile.conf
 ```
 
-Find and modify the DNS line:
+Find and **comment out** the DNS line:
 
 ```ini
 #DNS = 1.1.1.1
 ```
 
-Or if you want to force DNS to NextDNS CLI:
+Or optionally, set it to:
 
 ```ini
 DNS = 127.0.0.1
 ```
+
+> ✅ This allows all DNS resolution to go through your already-configured `nextdns-cli` running locally.
 
 ---
 
@@ -154,6 +171,7 @@ After reboot:
 ```bash
 curl https://www.cloudflare.com/cdn-cgi/trace | grep warp
 nextdns status
+sudo wg
 ```
 
 ✅ Expected:
@@ -171,3 +189,8 @@ nextdns status
 - WireGuard project and Cloudflare
 - Maintained by [@nightcodex7](https://github.com/nightcodex7)
 
+---
+
+## 📜 License
+
+GNU General Public License v3
