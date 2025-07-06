@@ -17,6 +17,16 @@ Tested and stable on **Linux Mint 22.1 (Ubuntu-based)**, but adaptable to most m
 
 ---
 
+## Flow Diagram
+
+![How Internet Traffic is Routed through Cloudflare WARP and NextDNS)](https://github.com/user-attachments/assets/5171dbe5-34f9-49da-b331-73b74b5c568f)
+
+⚠️ **Disclaimer**: While this setup enhances privacy and security, **no configuration is 100% foolproof**. Always stay updated, monitor your traffic, and use additional security layers if needed.
+
+
+
+---
+
 ## ⚠️ Prerequisites
 
 Before starting this setup, make sure:
