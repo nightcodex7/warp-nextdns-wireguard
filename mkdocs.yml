@@ -14,6 +14,14 @@ theme:
   name: material
   palette:
     # Dark mode (default)
+    - media: "(prefers-color-scheme)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
+    # Dark mode (forced)
     - scheme: slate
       primary: indigo
       accent: indigo
@@ -40,6 +48,8 @@ theme:
     - content.tabs.link
     - content.tooltips
     - header.autohide
+    - content.action.edit
+    - content.action.view
 
   icon:
     repo: fontawesome/brands/github
