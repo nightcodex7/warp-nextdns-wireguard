@@ -157,7 +157,7 @@ class ErrorHandler:
             suggestions.extend([
                 "Run the application with administrator privileges",
                 "Check file and directory permissions",
-                "Use sudo for Linux/macOS operations"
+                "Use sudo for Linux operations"
             ])
         
         elif error_type == 'ConnectionError':

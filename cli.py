@@ -48,6 +48,21 @@ def cli(ctx, auto):
     """WARP + NextDNS WireGuard Manager - Secure your connection with Cloudflare WARP and NextDNS."""
     ctx.ensure_object(dict)
     ctx.obj['auto'] = auto
+    
+    # Check platform and warn about macOS
+    platform = PlatformUtils()
+    if platform.is_macos:
+        console.print(Panel(
+            "[danger]⚠️  WARNING: macOS is not supported by this project![/danger]\n\n"
+            "[warning]This software is designed for Linux and Windows only.[/warning]\n"
+            "[warning]Attempting to continue may cause system issues.[/warning]\n"
+            "[warning]Please use a supported platform.[/warning]",
+            title="🚫 Platform Not Supported",
+            style="panel",
+            border_style="danger"
+        ))
+        if not Confirm.ask("Do you want to continue anyway?", default=False):
+            sys.exit(1)
 
 
 @cli.command()

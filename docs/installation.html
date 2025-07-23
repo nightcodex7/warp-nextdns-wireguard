@@ -253,7 +253,11 @@ pip install -e .</code></pre>
                         <div class="platform-tabs">
                             <button class="tab-btn active" onclick="showPlatformTab('linux')">Linux</button>
                             <button class="tab-btn" onclick="showPlatformTab('windows')">Windows</button>
-                            <button class="tab-btn" onclick="showPlatformTab('macos')">macOS</button>
+                        </div>
+                        
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>macOS Not Supported:</strong> This project is designed for Linux and Windows only. macOS users should not attempt to install this software as it may cause system issues or fail to work properly.
                         </div>
 
                         <div id="linux" class="tab-content active">
@@ -357,46 +361,7 @@ python cli.py setup</code></pre>
                             </div>
                         </div>
 
-                        <div id="macos" class="tab-content">
-                            <h3>macOS Installation</h3>
-                            <p>macOS users get native integration with system preferences and automatic keychain access.</p>
-                            
-                            <h4>Prerequisites</h4>
-                            <ul>
-                                <li>macOS 10.15+ (Catalina or later)</li>
-                                <li>Python 3.8+ (recommended: use Homebrew)</li>
-                                <li>Administrator privileges</li>
-                            </ul>
-                            
-                            <h4>Installation Steps</h4>
-                            <div class="code-block">
-                                <div class="code-header">
-                                    <span>Terminal</span>
-                                    <button class="copy-btn" onclick="copyCode('macos-code')">Copy</button>
-                                </div>
-                                <pre><code id="macos-code"># Install Python via Homebrew (recommended)
-brew install python3
 
-# Clone repository
-git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
-cd warp-nextdns-wireguard
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run setup
-python cli.py setup</code></pre>
-                            </div>
-                            
-                            <div class="alert alert-info" role="alert">
-                                <i class="fas fa-info-circle"></i>
-                                <strong>Tip:</strong> macOS will prompt for keychain access during setup. Allow it for secure credential storage.
-                            </div>
-                        </div>
                     </div>
 
                     <div class="content-section">
@@ -555,7 +520,7 @@ python cli.py logs</code></pre>
         
         function showPlatformTab(tabName) {
             // Hide all platform tab contents
-            const tabContents = document.querySelectorAll('#linux, #windows, #macos');
+            const tabContents = document.querySelectorAll('#linux, #windows');
             tabContents.forEach(content => content.classList.remove('active'));
             
             // Remove active class from all platform tab buttons

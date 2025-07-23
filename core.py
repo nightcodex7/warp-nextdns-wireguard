@@ -58,6 +58,14 @@ class WarpNextDNSManager:
     def __init__(self, auto_mode: bool = False):
         self.auto_mode = auto_mode
         self.platform = PlatformUtils()
+        
+        # Check for macOS and warn user
+        if self.platform.is_macos:
+            print("⚠️  WARNING: macOS is not supported by this project!")
+            print("   This software is designed for Linux and Windows only.")
+            print("   Attempting to continue may cause system issues.")
+            print("   Please use a supported platform.\n")
+        
         self.installer = InstallerManager()
         self.wgcf_manager = WGCFManager()
         self.nextdns_manager = NextDNSManager()

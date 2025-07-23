@@ -11,6 +11,7 @@ def test_platform_utils_initialization():
     assert hasattr(platform, 'system')
     assert hasattr(platform, 'is_linux')
     assert hasattr(platform, 'is_windows')
+    # macOS detection exists but is not supported
     assert hasattr(platform, 'is_macos')
 
 

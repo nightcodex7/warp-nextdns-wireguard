@@ -13,11 +13,18 @@ class PlatformUtils:
         self.system = platform.system().lower()
         self.is_linux = self.system == "linux"
         self.is_windows = self.system == "windows"
-        self.is_macos = self.system == "darwin"
+        self.is_macos = self.system == "darwin"  # For detection only - not supported
+        
+        # Check if running on macOS and warn user
+        if self.is_macos:
+            print("⚠️  WARNING: macOS is not supported by this project!")
+            print("   This software is designed for Linux and Windows only.")
+            print("   Attempting to continue may cause system issues.")
+            print("   Please use a supported platform.\n")
         
     def check_root_access(self) -> bool:
         """Check if running with root/admin privileges."""
-        if self.is_linux or self.is_macos:
+        if self.is_linux:
             return os.geteuid() == 0
         elif self.is_windows:
             try:
@@ -25,6 +32,9 @@ class PlatformUtils:
                 return ctypes.windll.shell32.IsUserAnAdmin() != 0
             except:
                 return False
+        elif self.is_macos:
+            print("⚠️  macOS detected - root access check not supported")
+            return False
         return False
     
     def get_package_manager(self) -> Optional[str]:

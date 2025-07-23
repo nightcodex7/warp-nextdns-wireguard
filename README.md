@@ -6,7 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-2.0.0-orange.svg)](VERSION)
-[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey.svg)](https://github.com/nightcodex7/warp-nextdns-wireguard)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-lightgrey.svg)](https://github.com/nightcodex7/warp-nextdns-wireguard)
 [![Buy Me a Coffee](https://img.shields.io/badge/☕-Buy%20Me%20a%20Coffee-orange?style=for-the-badge)](https://buymeacoffee.com/nightcode)
 [![Ko-fi](https://img.shields.io/badge/💙-Support%20on%20Ko--fi-blue?style=for-the-badge)](https://ko-fi.com/nightcode)
 
@@ -18,7 +18,7 @@
 
 - 🔐 **Encrypted Internet traffic** through Cloudflare WARP  
 - 🛡️ **Private, customizable DNS filtering** via your own [NextDNS](https://nextdns.io) profile  
-- 📶 **Cross-platform support**: Linux, Windows, macOS
+- 📶 **Cross-platform support**: Linux, Windows (macOS not supported)
 - 💻 **Rich CLI interface** with dynamic status updates
 - 🎯 **Enterprise features**: Advanced monitoring, backup, and security
 - 🛠️ **Comprehensive error handling** with automatic recovery
@@ -117,7 +117,7 @@ Visit our [modern documentation website](https://nightcodex7.github.io/warp-next
 ### 🔧 Core Functionality
 - **WARP registration** and WireGuard configuration
 - **NextDNS integration** with custom profiles
-- **Cross-platform compatibility** (Linux, Windows, macOS)
+- **Cross-platform compatibility** (Linux, Windows only - macOS not supported)
 - **Real-time status updates** with live monitoring
 - **Error recovery** and automatic retry mechanisms
 - **Comprehensive logging** and debugging support

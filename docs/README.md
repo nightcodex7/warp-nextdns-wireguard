@@ -18,7 +18,7 @@ Welcome to the official documentation for the WARP + NextDNS Manager project.
 
 ## 🌟 Features
 
-- **Cross-platform support**: Linux, Windows, macOS
+- **Cross-platform support**: Linux, Windows (macOS not supported)
 - **Enterprise-grade security**: Cloudflare WARP + NextDNS integration
 - **Rich CLI interface**: Interactive setup and monitoring
 - **Real-time status**: Live monitoring and diagnostics

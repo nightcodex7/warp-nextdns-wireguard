@@ -57,14 +57,10 @@ class InstallerManager:
             return True
             
         elif self.platform.is_macos:
-            # macOS elevation using osascript
-            cmd = ['osascript', '-e', 
-                   f'do shell script "{sys.executable} {" ".join(sys.argv)}" with administrator privileges']
-            try:
-                subprocess.run(cmd, check=True)
-                sys.exit(0)
-            except:
-                return False
+            print("⚠️  macOS is not supported by this project!")
+            print("   This software is designed for Linux and Windows only.")
+            print("   Please use a supported platform.")
+            return False
                 
         return False
     
@@ -190,12 +186,9 @@ class InstallerManager:
                     self.platform.run_command([str(installer), "/S"], check=False)
                     
             elif self.platform.is_macos:
-                # Check if Homebrew is installed
-                if self.platform.command_exists("brew"):
-                    self.platform.run_command(["brew", "install", "wireguard-tools"])
-                else:
-                    print("Please install Homebrew first: https://brew.sh")
-                    return False
+                print("⚠️  macOS is not supported by this project!")
+                print("   WireGuard tools installation not available on macOS.")
+                return False
                     
             return True
             
@@ -279,34 +272,9 @@ WantedBy=multi-user.target
                 return True
                 
             elif self.platform.is_macos:
-                # Create launchd plist
-                plist_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.warp-nextdns.manager</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>{sys.executable}</string>
-        <string>{script_path}</string>
-        <string>start</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-</dict>
-</plist>"""
-                
-                plist_path = Path("/Library/LaunchDaemons/com.warp-nextdns.manager.plist")
-                with open(plist_path, 'w') as f:
-                    f.write(plist_content)
-                
-                # Load the launch daemon
-                self.platform.run_command(["launchctl", "load", str(plist_path)])
-                
-                return True
+                print("⚠️  macOS is not supported by this project!")
+                print("   Auto-start setup not available on macOS.")
+                return False
                 
         except Exception as e:
             print(f"Failed to setup auto-start: {e}")
