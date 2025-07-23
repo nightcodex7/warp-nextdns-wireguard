@@ -58,17 +58,17 @@
 
     /* Background Colors - Enhanced for Better Contrast */
     --bg-primary: #0a0a0a;
-    --bg-secondary: #121212;
-    --bg-tertiary: #1e1e1e;
+    --bg-secondary: #111111;
+    --bg-tertiary: #1a1a1a;
     --bg-surface: #1f1f1f;
-    --bg-card: #2d2d2d;
+    --bg-card: #2a2a2a;
     --bg-overlay: rgba(0, 0, 0, 0.8);
 
     /* Text Colors - Enhanced for Perfect Visibility */
     --text-primary: #ffffff;
-    --text-secondary: #e0e0e0;
-    --text-muted: #b0b0b0;
-    --text-disabled: #808080;
+    --text-secondary: #ffffff;
+    --text-muted: #ffffff;
+    --text-disabled: #ffffff;
     --text-inverse: #000000;
 
     /* Status Colors - Enhanced for Better Visibility */
@@ -215,38 +215,38 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.2;
     margin-bottom: var(--space-md);
     color: var(--text-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 800;
     letter-spacing: -0.02em;
 }
 
 h2 {
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 700;
     letter-spacing: -0.01em;
 }
 
 h3 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 600;
 }
 
 h4 {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     font-weight: 600;
 }
 
 h5 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
 h6 {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
 }
 
@@ -254,7 +254,8 @@ p {
     color: var(--text-secondary);
     line-height: 1.7;
     margin-bottom: var(--space-md);
-    font-size: 1rem;
+    font-size: 1.1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 a {
@@ -319,13 +320,38 @@ a:focus {
 .text-medium { font-weight: 500 !important; }
 .text-normal { font-weight: 400 !important; }
 
+/* Force white text for all text elements */
+p, span, div, h1, h2, h3, h4, h5, h6, a, li, td, th, label, input, textarea, select {
+    color: var(--text-primary) !important;
+}
+
+/* Specific overrides for Bootstrap classes that might be causing grey text */
+.text-muted, .text-secondary, .text-body, .text-body-secondary {
+    color: var(--text-primary) !important;
+}
+
+/* Ensure all paragraph text is white */
+p {
+    color: var(--text-primary) !important;
+}
+
+/* Ensure all span elements are white */
+span {
+    color: var(--text-primary) !important;
+}
+
+/* Override any Bootstrap text utilities */
+.text-dark, .text-body, .text-body-secondary, .text-body-tertiary {
+    color: var(--text-primary) !important;
+}
+
 /* Enhanced Navigation - Robust Dark Mode */
 .navbar {
     background: rgba(10, 10, 10, 0.98) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding: var(--space-md) 0;
+    padding: var(--space-lg) 0;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-lg);
     position: sticky;
@@ -335,7 +361,7 @@ a:focus {
 
 .navbar-brand {
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     color: var(--text-primary) !important;
     text-decoration: none;
     display: flex;
@@ -370,7 +396,8 @@ a:focus {
 
 .navbar-nav .nav-link {
     color: var(--text-secondary) !important;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 1.05rem;
     padding: var(--space-sm) var(--space-md) !important;
     border-radius: var(--radius-md);
     transition: all 0.3s ease;
@@ -418,14 +445,20 @@ a:focus {
     background: var(--gradient-primary) !important;
     color: white !important;
     border-radius: var(--radius-full) !important;
-    padding: var(--space-sm) var(--space-lg) !important;
+    padding: var(--space-md) var(--space-xl) !important;
     font-weight: 600;
+    font-size: 1rem;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
     border: none;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     box-shadow: var(--shadow-md);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
 }
 
 .btn-github::before {
@@ -460,8 +493,9 @@ a:focus {
     background: var(--gradient-nextdns) !important;
     color: white !important;
     border-radius: var(--radius-full) !important;
-    padding: var(--space-sm) var(--space-lg) !important;
+    padding: var(--space-md) var(--space-xl) !important;
     font-weight: 600;
+    font-size: 1rem;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -469,6 +503,11 @@ a:focus {
     border: none;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     box-shadow: var(--shadow-md);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
 }
 
 .btn-developer-support::before {
@@ -589,39 +628,50 @@ a:focus {
 }
 
 .hero-title {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 800;
     margin-bottom: var(--space-lg);
     line-height: 1.1;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    color: var(--text-primary) !important;
+}
+
+/* Ensure the "Manager" text is white */
+.hero-title br + *,
+.hero-title span + * {
+    color: var(--text-primary) !important;
 }
 
 .hero-subtitle {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     color: var(--warp-orange);
     margin-bottom: var(--space-md);
     font-weight: 600;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero-description {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+    font-size: 1.25rem;
+    color: var(--text-primary) !important;
     margin-bottom: var(--space-xl);
     line-height: 1.7;
     max-width: 600px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .hero-buttons {
     display: flex;
-    gap: var(--space-md);
+    gap: var(--space-lg);
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 /* Enhanced Buttons - Robust Dark Mode */
 .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-sm);
     padding: var(--space-md) var(--space-xl);
     border-radius: var(--radius-full);
@@ -632,12 +682,13 @@ a:focus {
     overflow: hidden;
     border: none;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.1rem;
     transform-style: preserve-3d;
     perspective: 1000px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 48px;
+    min-width: 120px;
+    white-space: nowrap;
 }
 
 .btn::before {
@@ -680,7 +731,7 @@ a:focus {
 
 .btn-outline {
     background: transparent;
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
     border: 2px solid var(--warp-orange);
     position: relative;
     backdrop-filter: blur(10px);
@@ -707,7 +758,7 @@ a:focus {
 }
 
 .btn-outline:hover {
-    color: white;
+    color: white !important;
     transform: translateY(-3px);
     box-shadow: var(--shadow-xl);
     border-color: var(--warp-blue);
@@ -737,7 +788,7 @@ a:focus {
 .terminal-card {
     background: var(--bg-card);
     border-radius: var(--radius-lg);
-    padding: var(--space-lg);
+    padding: var(--space-xl);
     box-shadow: var(--shadow-3d);
     border: 1px solid rgba(255, 255, 255, 0.15);
     position: relative;
@@ -817,7 +868,7 @@ a:focus {
 
 .terminal-content {
     font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.6;
     color: var(--text-primary);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -853,10 +904,10 @@ a:focus {
 
 .status-line {
     margin-bottom: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-sm);
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -895,15 +946,17 @@ a:focus {
 }
 
 .section-header h2 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-bottom: var(--space-md);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .section-header p {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: var(--text-secondary);
     max-width: 600px;
     margin: 0 auto;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Enhanced Features Section - Fixed Alignment */
@@ -950,7 +1003,7 @@ a:focus {
 
 .feature-card {
     background: var(--bg-card);
-    padding: var(--space-xl);
+    padding: var(--space-2xl);
     border-radius: var(--radius-lg);
     text-align: center;
     box-shadow: var(--shadow-lg);
@@ -961,6 +1014,10 @@ a:focus {
     transform-style: preserve-3d;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .feature-card::before {
@@ -993,15 +1050,15 @@ a:focus {
 }
 
 .feature-icon {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     margin: 0 auto var(--space-lg);
     background: var(--gradient-warp);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 2.25rem;
     color: white;
     box-shadow: var(--shadow-warp);
     transition: all 0.3s ease;
@@ -1019,10 +1076,10 @@ a:focus {
 }
 
 .feature-card h3 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     margin-bottom: var(--space-md);
     color: var(--text-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     font-weight: 700;
 }
 
@@ -1030,7 +1087,7 @@ a:focus {
     color: var(--text-secondary);
     line-height: 1.6;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 /* Enhanced Demo Section */
@@ -1091,16 +1148,21 @@ a:focus {
 }
 
 .stat-number {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: var(--space-sm);
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    background: var(--gradient-glow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .stat-label {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: var(--text-secondary);
-    font-weight: 500;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Enhanced CTA Section - Fixed Alignment */
@@ -1147,24 +1209,27 @@ a:focus {
 }
 
 .cta-content h2 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-bottom: var(--space-lg);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .cta-content p {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: var(--text-secondary);
     margin-bottom: var(--space-xl);
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .cta-buttons {
     display: flex;
-    gap: var(--space-lg);
+    gap: var(--space-xl);
     justify-content: center;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 /* Enhanced Footer - Fixed Alignment */
@@ -1211,6 +1276,8 @@ a:focus {
     color: var(--text-primary);
     margin-bottom: var(--space-lg);
     font-weight: 600;
+    font-size: 1.3rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .footer ul {
@@ -1227,6 +1294,8 @@ a:focus {
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
+    font-size: 1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .footer ul li a::before {
@@ -1263,15 +1332,15 @@ a:focus {
 /* Enhanced Responsive Design - Robust Dark Mode */
 @media (max-width: 1200px) {
     .hero-title {
-        font-size: 3rem;
+        font-size: 3.5rem;
     }
     
     .section-header h2 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
     }
     
     .cta-content h2 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
     }
     
     .container {
@@ -1281,23 +1350,23 @@ a:focus {
 
 @media (max-width: 992px) {
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
     
     .hero-subtitle {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
     }
     
     .section-header h2 {
-        font-size: 2rem;
+        font-size: 2.25rem;
     }
     
     .cta-content h2 {
-        font-size: 2rem;
+        font-size: 2.25rem;
     }
     
     .stat-number {
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
     
     .navbar-nav {
@@ -1308,16 +1377,17 @@ a:focus {
         padding: var(--space-md) !important;
         border-radius: var(--radius-md);
         margin-bottom: var(--space-xs);
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 768px) {
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
     }
     
     .hero-subtitle {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
     }
     
     .hero-buttons {
@@ -1330,15 +1400,15 @@ a:focus {
         justify-content: center;
         padding: var(--space-lg) var(--space-xl);
         min-height: 48px;
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
     
     .section-header h2 {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
     
     .cta-content h2 {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
     
     .cta-buttons {
@@ -1381,16 +1451,16 @@ a:focus {
 
 @media (max-width: 576px) {
     .hero-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
         line-height: 1.2;
     }
     
     .hero-subtitle {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
     
     .hero-description {
-        font-size: 1rem;
+        font-size: 1.1rem;
         line-height: 1.6;
     }
     
@@ -1400,11 +1470,11 @@ a:focus {
     }
     
     .stat-number {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
     
     .terminal-content {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         line-height: 1.5;
     }
     
@@ -1414,7 +1484,7 @@ a:focus {
     
     .btn {
         padding: var(--space-md) var(--space-lg);
-        font-size: 0.9rem;
+        font-size: 1rem;
         min-height: 44px;
         width: 100%;
         justify-content: center;
@@ -1475,7 +1545,7 @@ a:focus {
     :root {
         --text-primary: #ffffff;
         --text-secondary: #ffffff;
-        --text-muted: #cccccc;
+        --text-muted: #ffffff;
         --bg-primary: #000000;
         --bg-secondary: #000000;
         --bg-card: #111111;
@@ -2166,4 +2236,23 @@ html {
         background: white !important;
         color: black !important;
     }
+}
+
+/* Final override to ensure all text is white */
+* {
+    color: var(--text-primary) !important;
+}
+
+/* Exceptions for specific elements that should keep their colors */
+.btn-primary, .btn-github, .btn-developer-support,
+.gradient-text, .stat-number, .feature-icon,
+.status-line.success, .status-line.info, .status-line.warning, .status-line.error,
+.prompt, .terminal-title,
+.btn-red, .btn-yellow, .btn-green {
+    color: inherit !important;
+}
+
+/* Ensure all text content is white */
+p, span, div, h1, h2, h3, h4, h5, h6, a, li, td, th, label, input, textarea, select, strong, em, b, i {
+    color: var(--text-primary) !important;
 }
