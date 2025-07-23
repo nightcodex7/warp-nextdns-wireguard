@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WARP + NextDNS Manager - Secure Internet Guardian</title>
-    <link rel="stylesheet" href="styles.css?v=2.0.0">
+    <title>WARP + NextDNS Manager - Enterprise-Grade VPN & DNS Security</title>
+    <meta name="description" content="Cross-platform CLI tool for Cloudflare WARP tunneling with NextDNS integration. Secure your internet traffic with enterprise-grade encryption and customizable DNS filtering.">
+    <link rel="stylesheet" href="styles.css?v=2.1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -39,6 +40,11 @@
                             <i class="fab fa-github"></i> GitHub
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-developer-support" href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">
+                            <i class="fas fa-code"></i> Support Dev
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -55,9 +61,10 @@
                             <span class="gradient-text">WARP + NextDNS</span>
                             <br>Manager
                         </h1>
-                        <p class="hero-subtitle">Your Secure Internet Guardian</p>
+                        <p class="hero-subtitle">Enterprise-Grade Internet Security</p>
                         <p class="hero-description">
-                            Cross-platform VPN & DNS management tool combining Cloudflare WARP's encrypted tunneling with NextDNS's advanced filtering for maximum privacy and security.
+                            Advanced CLI tool that combines Cloudflare WARP's WireGuard-based tunneling with NextDNS's intelligent filtering. 
+                            Perfect for privacy advocates, developers, and organizations requiring maximum security without compromising performance.
                         </p>
                         <div class="hero-buttons">
                             <a href="https://github.com/nightcodex7/warp-nextdns-wireguard" class="btn btn-primary" target="_blank">
@@ -86,18 +93,20 @@
                                     <span class="command">python cli.py status</span>
                                 </div>
                                 <div class="terminal-output">
-                                    <div class="status-line success">✅ WGCF Status: Running</div>
-                                    <div class="status-line success">✅ NextDNS Status: Active</div>
-                                    <div class="status-line success">✅ Internet Connection: Secure</div>
+                                    <div class="status-line success">✅ WGCF Status: Running (WireGuard Active)</div>
+                                    <div class="status-line success">✅ NextDNS Status: Active (Filtering Enabled)</div>
+                                    <div class="status-line success">✅ Internet Connection: Encrypted via WARP</div>
+                                    <div class="status-line success">✅ DNS Protection: NextDNS Profile Active</div>
                                 </div>
                                 <div class="terminal-line">
                                     <span class="prompt">$</span>
                                     <span class="command">python cli.py test</span>
                                 </div>
                                 <div class="terminal-output">
-                                    <div class="status-line success">✅ WARP Connection: PASS</div>
-                                    <div class="status-line success">✅ NextDNS Resolution: PASS</div>
-                                    <div class="status-line success">✅ IP Leak Test: PASS</div>
+                                    <div class="status-line success">✅ WARP Connection: PASS (Cloudflare Network)</div>
+                                    <div class="status-line success">✅ NextDNS Resolution: PASS (Custom Filters)</div>
+                                    <div class="status-line success">✅ IP Leak Test: PASS (No Leaks Detected)</div>
+                                    <div class="status-line success">✅ DNS Leak Test: PASS (NextDNS Only)</div>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +121,7 @@
         <div class="container">
             <div class="section-header text-center">
                 <h2 class="gradient-text">Advanced Security Features</h2>
-                <p>Built for privacy advocates and security-conscious users</p>
+                <p>Built for privacy advocates, developers, and security-conscious organizations</p>
             </div>
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
@@ -121,7 +130,7 @@
                             <i class="fas fa-network-wired"></i>
                         </div>
                         <h3>WARP Integration</h3>
-                        <p>WireGuard-based tunneling through Cloudflare's global network for maximum privacy and performance.</p>
+                        <p>WireGuard-based tunneling through Cloudflare's global network with 256-bit encryption. Automatic key management and connection optimization.</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
@@ -130,7 +139,7 @@
                             <i class="fas fa-filter"></i>
                         </div>
                         <h3>NextDNS Filtering</h3>
-                        <p>Customizable DNS filtering with ad/tracker blocking, malware protection, and parental controls.</p>
+                        <p>Customizable DNS filtering with ad/tracker blocking, malware protection, parental controls, and real-time threat intelligence.</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
@@ -139,7 +148,7 @@
                             <i class="fas fa-user-shield"></i>
                         </div>
                         <h3>Auto Elevation</h3>
-                        <p>Smart privilege escalation that handles admin/root access automatically across all platforms.</p>
+                        <p>Smart privilege escalation that handles admin/root access automatically across all platforms with secure credential management.</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
@@ -148,7 +157,7 @@
                             <i class="fas fa-desktop"></i>
                         </div>
                         <h3>Cross-Platform</h3>
-                        <p>Native support for Linux, Windows, and macOS with automatic OS and architecture detection.</p>
+                        <p>Native support for Linux, Windows, and macOS with automatic OS detection, architecture optimization, and platform-specific features.</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
@@ -157,7 +166,7 @@
                             <i class="fas fa-ban"></i>
                         </div>
                         <h3>Zero Logging</h3>
-                        <p>No telemetry, no history tracking, no sign-in required. Complete privacy by design.</p>
+                        <p>Complete privacy by design - no telemetry, no history tracking, no sign-in required. Your data stays on your device.</p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
@@ -166,7 +175,7 @@
                             <i class="fas fa-terminal"></i>
                         </div>
                         <h3>Rich CLI</h3>
-                        <p>Beautiful terminal interface with real-time monitoring, status tracking, and comprehensive logging.</p>
+                        <p>Beautiful terminal interface with real-time monitoring, status tracking, comprehensive logging, and JSON output for automation.</p>
                     </div>
                 </div>
             </div>
@@ -178,7 +187,7 @@
         <div class="container">
             <div class="section-header text-center">
                 <h2 class="gradient-text">See It In Action</h2>
-                <p>Beautiful terminal interface with real-time monitoring</p>
+                <p>Beautiful terminal interface with real-time monitoring and comprehensive diagnostics</p>
             </div>
             <div class="demo-container">
                 <div class="terminal-card large">
@@ -196,20 +205,23 @@
                             <span class="command">python cli.py status</span>
                         </div>
                         <div class="terminal-output">
-                            <div class="status-line success">✅ WGCF Status: Running</div>
-                            <div class="status-line success">✅ NextDNS Status: Active</div>
-                            <div class="status-line success">✅ Internet Connection: Secure</div>
-                            <div class="status-line success">✅ DNS Protection: Enabled</div>
+                            <div class="status-line success">✅ WGCF Status: Running (WireGuard Active)</div>
+                            <div class="status-line success">✅ NextDNS Status: Active (Filtering Enabled)</div>
+                            <div class="status-line success">✅ Internet Connection: Encrypted via WARP</div>
+                            <div class="status-line success">✅ DNS Protection: NextDNS Profile Active</div>
+                            <div class="status-line info">📊 Current IP: 162.158.x.x (Cloudflare WARP)</div>
+                            <div class="status-line info">🔒 DNS Servers: 45.90.28.x, 45.90.30.x (NextDNS)</div>
                         </div>
                         <div class="terminal-line">
                             <span class="prompt">$</span>
                             <span class="command">python cli.py test</span>
                         </div>
                         <div class="terminal-output">
-                            <div class="status-line success">✅ WARP Connection: PASS</div>
-                            <div class="status-line success">✅ NextDNS Resolution: PASS</div>
-                            <div class="status-line success">✅ IP Leak Test: PASS</div>
-                            <div class="status-line success">✅ DNS Leak Test: PASS</div>
+                            <div class="status-line success">✅ WARP Connection: PASS (Cloudflare Network)</div>
+                            <div class="status-line success">✅ NextDNS Resolution: PASS (Custom Filters)</div>
+                            <div class="status-line success">✅ IP Leak Test: PASS (No Leaks Detected)</div>
+                            <div class="status-line success">✅ DNS Leak Test: PASS (NextDNS Only)</div>
+                            <div class="status-line success">✅ Speed Test: 150 Mbps (Optimized)</div>
                         </div>
                         <div class="terminal-line">
                             <span class="prompt">$</span>
@@ -219,6 +231,7 @@
                             <div class="status-line info">📊 Real-time monitoring and logging</div>
                             <div class="status-line info">🔍 Detailed diagnostics and troubleshooting</div>
                             <div class="status-line info">📈 Performance metrics and statistics</div>
+                            <div class="status-line info">🛡️ Security validation and threat detection</div>
                         </div>
                     </div>
                 </div>
@@ -263,13 +276,16 @@
         <div class="container text-center">
             <div class="cta-content">
                 <h2 class="gradient-text">Ready to Secure Your Digital Life?</h2>
-                <p>Join thousands of privacy advocates using WARP + NextDNS Manager</p>
+                <p>Join thousands of privacy advocates, developers, and organizations using WARP + NextDNS Manager for enterprise-grade security</p>
                 <div class="cta-buttons">
                     <a href="https://github.com/nightcodex7/warp-nextdns-wireguard" class="btn btn-primary" target="_blank">
                         <i class="fab fa-github"></i> Get Started
                     </a>
                     <a href="installation.html" class="btn btn-outline">
                         <i class="fas fa-download"></i> Installation Guide
+                    </a>
+                    <a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" class="btn btn-outline" target="_blank">
+                        <i class="fas fa-code"></i> Support Developer
                     </a>
                 </div>
             </div>
@@ -285,22 +301,25 @@
                         <i class="fas fa-shield-halved"></i>
                         <span>WARP + NextDNS Manager</span>
                     </div>
-                    <p>Your Secure Internet Guardian</p>
+                    <p>Enterprise-Grade Internet Security</p>
+                    <p>Combining Cloudflare WARP's encrypted tunneling with NextDNS's intelligent filtering for maximum privacy and performance.</p>
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <h4>Project</h4>
                     <ul>
-                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">GitHub</a></li>
-                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/releases" target="_blank">Releases</a></li>
-                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Issues</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">GitHub Repository</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/releases" target="_blank">Latest Releases</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Report Issues</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/pulls" target="_blank">Pull Requests</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <h4>Resources</h4>
                     <ul>
-                        <li><a href="installation.html">Installation</a></li>
-                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">Documentation</a></li>
-                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">Changelog</a></li>
+                        <li><a href="installation.html">Installation Guide</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/wiki" target="_blank">Documentation</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/blob/main/CHANGELOG.md" target="_blank">Changelog</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6">
@@ -308,13 +327,24 @@
                     <ul>
                         <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Bug Reports</a></li>
                         <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/discussions" target="_blank">Discussions</a></li>
-                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">Wiki</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/wiki" target="_blank">Wiki</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues/new?template=feature_request.md" target="_blank">Feature Requests</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h4>Developer</h4>
+                    <ul>
+                        <li><a href="https://github.com/nightcodex7" target="_blank">@nightcodex7</a></li>
+                        <li><a href="https://buymeacoffee.com/nightcode" target="_blank">Buy Me a Coffee</a></li>
+                        <li><a href="https://ko-fi.com/nightcode" target="_blank">Support on Ko-fi</a></li>
+                        <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/stargazers" target="_blank">Star Project</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 WARP + NextDNS Manager. Licensed under MIT License.</p>
-                <p>Built with ❤️ for privacy advocates and security-conscious users</p>
+                <p>Built with ❤️ for privacy advocates, developers, and security-conscious users worldwide</p>
+                <p>Powered by <a href="https://www.cloudflare.com/warp/" target="_blank">Cloudflare WARP</a> and <a href="https://nextdns.io" target="_blank">NextDNS</a></p>
             </div>
         </div>
     </footer>
