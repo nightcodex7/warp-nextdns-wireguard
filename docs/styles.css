@@ -135,7 +135,6 @@
 html {
     background: var(--bg-primary) !important;
     color: var(--text-primary) !important;
-    scroll-behavior: smooth;
     font-size: 16px;
 }
 
@@ -1522,8 +1521,10 @@ a:focus {
 }
 
 /* Enhanced Animations */
+
+/* Prevent auto-scroll on page load */
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
 }
 
 .fade-in {
