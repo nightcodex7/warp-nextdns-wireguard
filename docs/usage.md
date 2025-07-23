@@ -98,32 +98,34 @@ Output example:
     "platform": "Linux-5.15.0-x86_64",
     "machine": "x86_64"
   },
-  "elevated": true,
-  "wgcf": {
-    "wgcf_binary": true,
-    "account_registered": true,
-    "profile_generated": true,
-    "profile_installed": true,
-    "running": true
+  "services": {
+    "warp": {
+      "status": "running",
+      "interface": "wgcf0",
+      "ip": "172.16.0.2"
+    },
+    "nextdns": {
+      "status": "active",
+      "profile": "abc123",
+      "dns": "45.90.28.0"
+    }
   },
-  "nextdns": {
-    "installed": true,
-    "running": true,
-    "configured": true
-  },
-  "timestamp": "2024-12-19T10:30:00"
+  "connectivity": {
+    "internet": true,
+    "warp_ip": "104.28.xxx.xxx",
+    "dns_leak": false
+  }
 }
 ```
 
-### Detailed Status Information
+### Real-time Monitoring
 
 ```bash
-# Verbose status with all details
-python cli.py status --verbose
+# Monitor with auto-refresh (every 5 seconds)
+python cli.py monitor
 
-# Check specific components
-python cli.py status --wgcf-only
-python cli.py status --nextdns-only
+# Custom refresh interval
+python cli.py monitor --refresh 10
 ```
 
 ## 🔄 Service Management
@@ -137,8 +139,8 @@ python cli.py start
 # Start with auto-elevation
 python cli.py start --auto-elevate
 
-# Start specific services
-python cli.py start --wgcf-only
+# Start specific service
+python cli.py start --warp-only
 python cli.py start --nextdns-only
 ```
 
@@ -148,58 +150,60 @@ python cli.py start --nextdns-only
 # Stop all services
 python cli.py stop
 
-# Stop specific services
-python cli.py stop --wgcf-only
+# Stop specific service
+python cli.py stop --warp-only
 python cli.py stop --nextdns-only
 ```
 
-### Service Status
+### Restarting Services
 
 ```bash
-# Check if services are running
-python cli.py status
+# Restart all services
+python cli.py restart
 
-# View service logs
-python cli.py logs
-
-# Monitor services in real-time
-python cli.py logs --follow
+# Restart specific service
+python cli.py restart --warp-only
 ```
 
-## 🧪 Connectivity Testing
+## 🧪 Testing and Diagnostics
 
-### Basic Testing
+### Connection Testing
 
 ```bash
-# Test all connectivity
+# Test all components
 python cli.py test
-```
 
-Output example:
-```json
-{
-  "internet": true,
-  "warp": true,
-  "nextdns": true
-}
-```
-
-### Advanced Testing
-
-```bash
 # Test specific components
 python cli.py test --warp-only
 python cli.py test --nextdns-only
-python cli.py test --internet-only
-
-# Verbose testing with details
-python cli.py test --verbose
-
-# Continuous testing
-python cli.py test --continuous --interval 30
+python cli.py test --dns-leak
 ```
 
-## 📝 Logging and Debugging
+### Test Results
+
+```bash
+$ python cli.py test
+
+✅ WARP Connection: PASS
+✅ NextDNS Resolution: PASS
+✅ IP Leak Test: PASS
+✅ DNS Leak Test: PASS
+✅ Speed Test: 150 Mbps
+```
+
+### Network Diagnostics
+
+```bash
+# Run comprehensive diagnostics
+python cli.py diagnose
+
+# Check specific aspects
+python cli.py diagnose --connectivity
+python cli.py diagnose --dns
+python cli.py diagnose --warp
+```
+
+## 📝 Logging and Monitoring
 
 ### View Logs
 
@@ -207,140 +211,175 @@ python cli.py test --continuous --interval 30
 # View recent logs
 python cli.py logs
 
-# View logs with specific number of lines
-python cli.py logs --lines 100
-
 # Follow logs in real-time
 python cli.py logs --follow
 
-# View logs for specific service
-python cli.py logs --service wgcf
-python cli.py logs --service nextdns
+# Filter logs by service
+python cli.py logs --warp
+python cli.py logs --nextdns
+
+# Filter by log level
+python cli.py logs --level error
+python cli.py logs --level warning
 ```
 
-### Debug Mode
+### Log Output
 
 ```bash
-# Enable debug logging
-python cli.py setup --debug
-python cli.py start --debug
-python cli.py test --debug
+$ python cli.py logs
+
+[2024-01-15 10:30:15] INFO: WARP service started successfully
+[2024-01-15 10:30:16] INFO: NextDNS service activated
+[2024-01-15 10:30:17] INFO: DNS resolution working correctly
+[2024-01-15 10:30:18] INFO: All services running normally
 ```
 
 ## 🔧 Configuration Management
 
-### Manual Configuration
-
-If you need to configure manually:
+### Backup Configuration
 
 ```bash
-# Configure WGCF only
-python cli.py setup --wgcf-only
+# Create backup
+python cli.py backup
 
-# Configure NextDNS only
-python cli.py setup --nextdns-only
-
-# Update configuration
-python cli.py setup --update-config
+# Backup to specific location
+python cli.py backup --output /path/to/backup.tar.gz
 ```
 
-### Configuration Files
-
-The tool creates these configuration files:
-
-- **WGCF**: `/etc/wireguard/wgcf.conf`
-- **NextDNS**: `/etc/nextdns.conf`
-- **System Services**: `/etc/systemd/system/wgcf.service`, `/etc/systemd/system/nextdns.service`
-
-### Backup and Restore
+### Restore Configuration
 
 ```bash
-# Backup current configuration
-python cli.py backup --output backup.tar.gz
-
 # Restore from backup
-python cli.py restore --input backup.tar.gz
+python cli.py restore --input /path/to/backup.tar.gz
 ```
 
-## 🚀 Automation and Scripting
-
-### Non-Interactive Usage
-
-For automation and scripting:
+### Update Configuration
 
 ```bash
-# Non-interactive setup
-python cli.py setup --non-interactive --profile-id YOUR_PROFILE_ID
+# Update NextDNS profile
+python cli.py config --nextdns-profile NEW_PROFILE_ID
 
-# Non-interactive start/stop
-python cli.py start --non-interactive
-python cli.py stop --non-interactive
-
-# JSON output for parsing
-python cli.py status --json
-python cli.py test --json
+# Update WARP configuration
+python cli.py config --warp-refresh
 ```
 
-### Integration Examples
+## 🚨 Troubleshooting Commands
 
-#### Systemd Service Integration
-```bash
-# Create systemd service
-sudo systemctl enable warp-nextdns
-
-# Start on boot
-sudo systemctl start warp-nextdns
-
-# Check status
-sudo systemctl status warp-nextdns
-```
-
-#### Cron Job Integration
-```bash
-# Add to crontab for periodic testing
-*/30 * * * * /usr/local/bin/warp-nextdns test --json > /var/log/warp-test.log
-```
-
-#### Monitoring Integration
-```bash
-# Health check script
-#!/bin/bash
-if ! python cli.py test --json | grep -q '"warp": true'; then
-    echo "WARP is down, restarting..."
-    python cli.py restart
-fi
-```
-
-## 🔍 Troubleshooting Commands
-
-### Diagnostic Commands
+### Quick Diagnostics
 
 ```bash
-# Full system diagnostic
-python cli.py diagnose
+# Check system health
+python cli.py health
 
-# Check network connectivity
-python cli.py diagnose --network
+# Verify installation
+python cli.py verify
 
-# Check service health
-python cli.py diagnose --services
-
-# Generate diagnostic report
-python cli.py diagnose --report diagnostic-report.txt
+# Check dependencies
+python cli.py deps
 ```
 
-### Recovery Commands
+### Advanced Troubleshooting
 
 ```bash
 # Reset configuration
-python cli.py reset --config
+python cli.py reset
 
-# Reinstall components
-python cli.py reinstall --wgcf
-python cli.py reinstall --nextdns
+# Clean installation
+python cli.py clean
 
-# Full reset and reinstall
-python cli.py reset --full
+# Force reinstall
+python cli.py reinstall
+```
+
+## 📊 Performance Monitoring
+
+### Speed Testing
+
+```bash
+# Run speed test
+python cli.py speedtest
+
+# Test specific servers
+python cli.py speedtest --server cloudflare
+python cli.py speedtest --server nextdns
+```
+
+### Performance Metrics
+
+```bash
+# View performance stats
+python cli.py stats
+
+# Monitor resource usage
+python cli.py monitor --resources
+```
+
+## 🔐 Security Features
+
+### Security Audit
+
+```bash
+# Run security audit
+python cli.py audit
+
+# Check specific security aspects
+python cli.py audit --dns-leak
+python cli.py audit --ip-leak
+python cli.py audit --webrtc
+```
+
+### Privacy Testing
+
+```bash
+# Test privacy protection
+python cli.py privacy
+
+# Check fingerprinting protection
+python cli.py privacy --fingerprint
+```
+
+## 🎯 Use Cases and Examples
+
+### Daily Usage
+
+```bash
+# Start your day
+python cli.py start
+
+# Check status throughout the day
+python cli.py status
+
+# Monitor performance
+python cli.py monitor
+
+# Stop at end of day
+python cli.py stop
+```
+
+### Automation
+
+```bash
+# Add to startup scripts
+python cli.py start --auto-elevate
+
+# Create monitoring script
+while true; do
+    python cli.py status
+    sleep 300
+done
+```
+
+### Development Workflow
+
+```bash
+# Quick setup for development
+python cli.py setup --non-interactive --profile-id dev-profile
+
+# Test changes
+python cli.py test
+
+# Monitor during development
+python cli.py monitor --refresh 2
 ```
 
 ## 📱 Mobile and Remote Usage
@@ -348,111 +387,85 @@ python cli.py reset --full
 ### Remote Management
 
 ```bash
-# Enable remote management
-python cli.py setup --remote --port 8080
+# Check status remotely
+ssh user@server "python cli.py status"
 
-# Access web interface
-# http://your-server:8080
+# Remote monitoring
+ssh user@server "python cli.py monitor"
 ```
 
-### Mobile App Integration
-
-The tool can be integrated with mobile apps through:
-
-- **REST API**: JSON endpoints for status and control
-- **WebSocket**: Real-time status updates
-- **CLI**: Command-line interface for scripting
-
-## 🔐 Security Considerations
-
-### Privilege Management
+### Mobile Integration
 
 ```bash
-# Run with minimal privileges
-python cli.py setup --minimal-privileges
+# Quick status check
+python cli.py status --json
 
-# Use specific user
-python cli.py setup --user warp-user
-
-# Secure configuration
-python cli.py setup --secure-mode
+# Mobile-friendly output
+python cli.py status --compact
 ```
 
-### Network Security
+## 🔄 Updates and Maintenance
+
+### Check for Updates
 
 ```bash
-# Configure firewall rules
-python cli.py setup --configure-firewall
+# Check for new versions
+python cli.py update --check
 
-# Enable logging
-python cli.py setup --enable-logging
-
-# Set up monitoring
-python cli.py setup --enable-monitoring
+# Update to latest version
+python cli.py update
 ```
 
-## 📚 Examples and Use Cases
-
-### Basic Home Setup
+### Maintenance Mode
 
 ```bash
-# Simple home setup
-python cli.py setup --profile-id YOUR_PROFILE_ID
+# Enter maintenance mode
+python cli.py maintenance --enable
+
+# Perform maintenance tasks
+python cli.py maintenance --clean-logs
+python cli.py maintenance --optimize
+
+# Exit maintenance mode
+python cli.py maintenance --disable
+```
+
+## 📚 Advanced Usage
+
+### Scripting and Automation
+
+```bash
+#!/bin/bash
+# Example automation script
+
+# Start services
 python cli.py start
+
+# Wait for services to be ready
+sleep 10
+
+# Verify connectivity
+if python cli.py test --quiet; then
+    echo "Services started successfully"
+else
+    echo "Service startup failed"
+    python cli.py logs --level error
+fi
 ```
 
-### Server Setup
+### Integration with Other Tools
 
 ```bash
-# Server setup with monitoring
-python cli.py setup --profile-id YOUR_PROFILE_ID --server-mode
-python cli.py start --auto-start
+# Export status for monitoring tools
+python cli.py status --json > status.json
+
+# Pipe logs to log aggregation
+python cli.py logs --follow | tee -a /var/log/warp-nextdns.log
+
+# Use with system monitoring
+python cli.py status --prometheus > /var/lib/prometheus/warp-nextdns.prom
 ```
-
-### Development Environment
-
-```bash
-# Development setup
-python cli.py setup --dev-mode --debug
-python cli.py start --dev-mode
-```
-
-## 🔗 Integration with Other Tools
-
-### Docker Integration
-
-```dockerfile
-FROM python:3.11-slim
-COPY . /app
-WORKDIR /app
-RUN pip install -r requirements.txt
-CMD ["python", "cli.py", "start"]
-```
-
-### Ansible Integration
-
-```yaml
-- name: Install WARP NextDNS Manager
-  hosts: servers
-  tasks:
-    - name: Clone repository
-      git:
-        repo: https://github.com/nightcodex7/warp-nextdns-wireguard.git
-        dest: /opt/warp-nextdns-wireguard
-    
-    - name: Run setup
-      command: python cli.py setup --non-interactive --profile-id "{{ nextdns_profile_id }}"
-      become: yes
-```
-
-## 📖 Next Steps
-
-After learning the basics:
-
-1. **[Configuration Guide](configuration.md)** - Advanced configuration options
-2. **[Troubleshooting Guide](troubleshooting.md)** - Solve common issues
-3. **[API Reference](api.md)** - Developer documentation
 
 ---
 
-**Need help?** Check our [troubleshooting guide](troubleshooting.md) or [create an issue](https://github.com/nightcodex7/warp-nextdns-wireguard/issues). 
+**Next Steps**: [Configuration](configuration.md) | [Troubleshooting](troubleshooting.md) | [API Reference](api.md) 

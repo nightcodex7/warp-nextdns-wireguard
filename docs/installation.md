@@ -98,23 +98,26 @@ python cli.py setup
 
 #### Using PowerShell (Recommended)
 ```powershell
-# Install Python from Microsoft Store or python.org
-# Clone the repository
+# Enable execution policy (if needed)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Install Python (if not already installed)
+winget install Python.Python.3.11
+
+# Clone and setup
 git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
 cd warp-nextdns-wireguard
-
-# Run as Administrator
 python cli.py setup
 ```
 
 #### Using Command Prompt
 ```cmd
-# Install Python from python.org
-# Clone the repository
+# Install Python (if not already installed)
+winget install Python.Python.3.11
+
+# Clone and setup
 git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
 cd warp-nextdns-wireguard
-
-# Run as Administrator
 python cli.py setup
 ```
 
@@ -122,7 +125,7 @@ python cli.py setup
 
 #### Using Homebrew (Recommended)
 ```bash
-# Install Homebrew if not installed
+# Install Homebrew (if not already installed)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Install Python
@@ -134,34 +137,106 @@ cd warp-nextdns-wireguard
 python3 cli.py setup
 ```
 
-#### Using Python.org
+#### Using MacPorts
 ```bash
-# Download Python from python.org
-# Clone the repository
+# Install Python
+sudo port install python311
+
+# Clone and setup
 git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
 cd warp-nextdns-wireguard
 python3 cli.py setup
 ```
 
-## 🔧 Installation Process
+## 🔧 Setup Process
 
-The installation process automatically handles:
+### 1. Initial Setup
 
-1. **System Detection**: Identifies your OS and architecture
-2. **Dependency Installation**: Installs required system packages
-3. **WGCF Setup**: Downloads and configures WGCF for WARP
-4. **NextDNS Configuration**: Sets up NextDNS CLI and configuration
-5. **Service Creation**: Creates system services for auto-start
-6. **Network Configuration**: Configures WireGuard interfaces
-7. **Testing**: Verifies the installation and connectivity
+The setup process will guide you through:
 
-### What Gets Installed
+1. **System detection** - Automatically detects your OS and architecture
+2. **Dependency installation** - Installs required tools (wgcf, WireGuard, NextDNS)
+3. **WARP registration** - Creates WARP account and generates WireGuard config
+4. **NextDNS configuration** - Sets up DNS filtering with your profile
+5. **Service creation** - Creates system services for automatic startup
 
-- **WGCF**: WireGuard Cloudflare client for WARP
-- **NextDNS CLI**: NextDNS command-line interface
-- **WireGuard Tools**: System WireGuard utilities
-- **System Services**: Auto-start services for Linux/Windows/macOS
-- **Configuration Files**: WARP and NextDNS configuration
+### 2. Interactive Setup
+
+```bash
+python cli.py setup
+```
+
+You'll be prompted for:
+- **NextDNS Profile ID** - Your NextDNS profile identifier
+- **Auto-elevation** - Whether to automatically handle privilege escalation
+- **Service creation** - Whether to create system services
+
+### 3. Non-Interactive Setup
+
+```bash
+python cli.py setup --non-interactive --profile-id YOUR_PROFILE_ID
+```
+
+Perfect for automation and scripting.
+
+## 🔐 NextDNS Configuration
+
+### Getting Your Profile ID
+
+1. **Sign up** at [NextDNS.io](https://nextdns.io)
+2. **Create a profile** in your dashboard
+3. **Copy the profile ID** from the profile settings
+
+### Profile ID Format
+
+Your NextDNS profile ID looks like: `abc123` or `def456-ghi789`
+
+## 🚨 Troubleshooting Installation
+
+### Common Issues
+
+#### Permission Errors
+```bash
+# Linux/macOS - Ensure elevated privileges
+sudo python3 cli.py setup
+
+# Windows - Run as Administrator
+# Right-click PowerShell/CMD and select "Run as Administrator"
+```
+
+#### Python Version Issues
+```bash
+# Check Python version
+python --version
+python3 --version
+
+# Install specific version if needed
+# Ubuntu/Debian
+sudo apt install python3.11
+
+# macOS
+brew install python@3.11
+```
+
+#### Network Connectivity
+```bash
+# Test internet connection
+ping 1.1.1.1
+
+# Test DNS resolution
+nslookup google.com
+```
+
+#### Dependency Installation Failures
+```bash
+# Update package lists
+sudo apt update  # Ubuntu/Debian
+sudo dnf update  # Fedora
+brew update      # macOS
+
+# Retry installation
+python cli.py setup
+```
 
 ## ✅ Verification
 
@@ -171,20 +246,11 @@ After installation, verify everything is working:
 # Check status
 python cli.py status
 
-# Test connectivity
+# Test connection
 python cli.py test
 
 # View logs
 python cli.py logs
-```
-
-Expected output:
-```json
-{
-  "warp": true,
-  "nextdns": true,
-  "internet": true
-}
 ```
 
 ## 🔄 Updating
@@ -193,89 +259,39 @@ To update to the latest version:
 
 ```bash
 # Pull latest changes
-git pull origin testing
+git pull origin main
 
 # Reinstall dependencies
 pip install -r requirements.txt
 
 # Restart services
-python cli.py stop
-python cli.py start
+python cli.py restart
 ```
 
 ## 🗑️ Uninstallation
 
-To completely remove the installation:
+To completely remove WARP + NextDNS Manager:
 
 ```bash
 # Stop services
 python cli.py stop
 
-# Remove configuration
-sudo rm -rf /etc/wireguard/wgcf.conf
-sudo rm -rf /etc/nextdns.conf
+# Uninstall
+python cli.py uninstall
 
-# Remove system services
-sudo systemctl disable wgcf
-sudo systemctl disable nextdns
-
-# Remove from package manager (if installed)
-# Linux: sudo apt remove wireguard-tools
-# macOS: brew uninstall wireguard-tools
+# Remove configuration files
+rm -rf ~/.warp-nextdns
 ```
 
-## 🆘 Troubleshooting
+## 📞 Support
 
-### Common Issues
-
-#### Permission Denied
-```bash
-# Ensure you're running with elevated privileges
-sudo python cli.py setup
-```
-
-#### Python Not Found
-```bash
-# Install Python first
-# Ubuntu/Debian: sudo apt install python3
-# Fedora: sudo dnf install python3
-# macOS: brew install python
-```
-
-#### Network Issues
-```bash
-# Check firewall settings
-# Ensure ports 53 (DNS) and 51820 (WireGuard) are open
-```
-
-#### Service Failures
-```bash
-# Check service status
-sudo systemctl status wgcf
-sudo systemctl status nextdns
-
-# View detailed logs
-sudo journalctl -u wgcf -f
-sudo journalctl -u nextdns -f
-```
-
-### Getting Help
-
-If you encounter issues:
+If you encounter issues during installation:
 
 1. **Check the logs**: `python cli.py logs`
-2. **Review troubleshooting guide**: [Troubleshooting](troubleshooting.md)
-3. **Search existing issues**: [GitHub Issues](https://github.com/nightcodex7/warp-nextdns-wireguard/issues)
-4. **Create a new issue**: Include system information and error logs
-
-## 📚 Next Steps
-
-After successful installation:
-
-1. **[Usage Guide](usage.md)** - Learn how to use the tool
-2. **[Configuration](configuration.md)** - Advanced configuration options
-3. **[Troubleshooting](troubleshooting.md)** - Solve common issues
+2. **Run diagnostics**: `python cli.py test`
+3. **Review this guide** for common solutions
+4. **Open an issue** on GitHub with detailed information
 
 ---
 
-**Need help?** Check our [troubleshooting guide](troubleshooting.md) or [create an issue](https://github.com/nightcodex7/warp-nextdns-wireguard/issues). 
+**Next Steps**: [Usage Guide](usage.md) | [Configuration](configuration.md) | [Troubleshooting](troubleshooting.md) 
