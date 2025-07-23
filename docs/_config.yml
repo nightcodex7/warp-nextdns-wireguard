@@ -6,9 +6,6 @@ url: https://nightcodex7.github.io/warp-nextdns-wireguard
 
 # Build settings
 theme: jekyll-theme-minimal
-plugins:
-  - jekyll-seo-tag
-  - jekyll-sitemap
 
 # Exclude from processing
 exclude:
@@ -21,30 +18,6 @@ exclude:
   - utils/
   - .github/
 
-# Collections
-collections:
-  docs:
-    output: true
-    permalink: /:collection/:name/
-
-# Defaults
-defaults:
-  - scope:
-      path: ""
-      type: "docs"
-    values:
-      layout: "default"
-
 # Markdown settings
 markdown: kramdown
-highlighter: rouge
-
-# Pagination
-paginate: 10
-paginate_path: "/page/:num/"
-
-# Sitemap
-sitemap:
-  exclude: ['/atom.xml', '/feed.xml']
-  change_freq: weekly
-  priority: 0.8 
+highlighter: rouge 

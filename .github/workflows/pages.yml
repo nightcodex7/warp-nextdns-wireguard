@@ -21,16 +21,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
       - name: Verify static website
         run: |
           echo "Static website is already built in /docs folder"
           echo "No build process needed for static HTML/CSS website"
           ls -la docs/
+          echo "Files in docs directory:"
+          find docs/ -type f -name "*.html" -o -name "*.css" -o -name "*.md" | head -10
       
       - name: Setup Pages
         uses: actions/configure-pages@v4

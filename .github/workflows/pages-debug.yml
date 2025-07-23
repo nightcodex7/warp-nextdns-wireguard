@@ -1,0 +1,72 @@
+name: Debug GitHub Pages
+
+on:
+  push:
+    branches: [ testing ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Debug Information
+        run: |
+          echo "=== Debug Information ==="
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Job: ${{ github.job }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Run Number: ${{ github.run_number }}"
+          
+      - name: Check Repository Structure
+        run: |
+          echo "=== Repository Structure ==="
+          echo "Current directory: $(pwd)"
+          echo "Repository contents:"
+          ls -la
+          echo ""
+          echo "Docs directory contents:"
+          if [ -d "docs" ]; then
+            ls -la docs/
+            echo ""
+            echo "HTML files in docs:"
+            find docs/ -name "*.html" -type f
+            echo ""
+            echo "CSS files in docs:"
+            find docs/ -name "*.css" -type f
+          else
+            echo "No docs directory found!"
+          fi
+          
+      - name: Check GitHub Pages Configuration
+        run: |
+          echo "=== GitHub Pages Configuration ==="
+          if [ -f "docs/_config.yml" ]; then
+            echo "Jekyll config found:"
+            cat docs/_config.yml
+          else
+            echo "No Jekyll config found"
+          fi
+          
+      - name: Test Static Site
+        run: |
+          echo "=== Static Site Test ==="
+          if [ -f "docs/index.html" ]; then
+            echo "index.html found and readable"
+            echo "First 10 lines of index.html:"
+            head -10 docs/index.html
+          else
+            echo "ERROR: index.html not found!"
+            exit 1
+          fi 
