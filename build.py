@@ -49,7 +49,7 @@ def clean_build():
 
 def install_dependencies():
     """Install build dependencies"""
-    print("📦 Installing build dependencies...")
+    print("Installing build dependencies...")
     
     # Install PyInstaller if not present
     try:
@@ -62,7 +62,7 @@ def install_dependencies():
 
 def build_executable():
     """Build executable using PyInstaller"""
-    print("🔨 Building executable...")
+    print("Building executable...")
     
     version = get_version()
     system = platform.system().lower()
@@ -106,7 +106,7 @@ def build_executable():
 
 def create_changelog():
     """Create changelog from git commits"""
-    print("📝 Creating changelog...")
+    print("Creating changelog...")
     
     version = get_version()
     
@@ -155,7 +155,7 @@ def create_changelog():
 
 def create_release_assets():
     """Create release assets"""
-    print("📦 Creating release assets...")
+    print("Creating release assets...")
     
     version = get_version()
     system = platform.system().lower()
@@ -208,7 +208,7 @@ echo "Run 'warp-nextdns setup' to configure"
 
 def create_github_release():
     """Create GitHub release"""
-    print("🚀 Creating GitHub release...")
+    print("Creating GitHub release...")
     
     version = get_version()
     
