@@ -2,178 +2,55 @@ name: Release Management
 
 on:
   push:
-    branches: [main, testing]
-  pull_request:
-    branches: [main, testing]
-  release:
-    types: [published]
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  # Branch Management
-  branch-protection:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Set up branch protection
-        run: |
-          echo "Setting up branch protection rules for main branch"
-          # This would require GitHub API calls with appropriate permissions
-          # For now, we'll just log the action
-          echo "Main branch protection should be configured manually in repository settings"
-  
-  # Testing Branch Management
-  testing-branch:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/testing'
-    steps:
-      - name: Set testing as default for GitHub Pages
-        run: |
-          echo "Setting testing branch as default for GitHub Pages"
-          # This would require GitHub API calls
-          echo "Testing branch should be set as default for GitHub Pages manually"
-  
-  # Build and Test
-  build-test:
+  build-executables:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.8, 3.9, 3.10, 3.11]
-    
+        python-version: ['3.11']
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-      
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-cov
-      
-      - name: Run tests
-        run: |
-          # Run tests if they exist, otherwise just verify imports
-          if [ -d "tests" ] && [ "$(ls -A tests)" ]; then
-            python -m pytest tests/ -v --cov=core --cov=utils --cov-report=xml
-          else
-            echo "No tests found, running basic import tests"
-            python -c "import core; import cli; print('All imports successful')"
-          fi
-      
-      - name: Upload coverage to Codecov
-        if: always()
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
-  
-  # Build Executables
-  build-executables:
-    runs-on: ${{ matrix.os }}
-    needs: build-test
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
-      
+
       - name: Build executable
         run: |
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            pyinstaller --onefile --windowed --name "WARP_NextDNS_Manager" cli.py
-          else
-            pyinstaller --onefile --name "warp-nextdns-manager" cli.py
-          fi
-      
+          python build.py
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: executable-${{ runner.os }}
+          name: executable-${{ matrix.os }}
           path: dist/
-  
-  # Release Management
+
   create-release:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [build-test, build-executables]
-    
+    needs: build-executables
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      
-      - name: Generate changelog
-        id: changelog
-        run: |
-          # Generate changelog from commits
-          echo "## Changelog" > CHANGELOG.md
-          echo "" >> CHANGELOG.md
-          echo "### $(date +%Y-%m-%d)" >> CHANGELOG.md
-          echo "" >> CHANGELOG.md
-          git log --oneline --since="1 week ago" >> CHANGELOG.md
-          echo "" >> CHANGELOG.md
-          echo "### Previous Changes" >> CHANGELOG.md
-          echo "" >> CHANGELOG.md
-          git log --oneline --since="1 month ago" --until="1 week ago" >> CHANGELOG.md
-      
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
-          body_path: CHANGELOG.md
-          draft: false
-          prerelease: false
-      
-      - name: Download build artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: dist/
-      
-      - name: Upload release assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/
-          asset_name: WARP_NextDNS_Manager_v${{ github.run_number }}
-          asset_content_type: application/octet-stream
 
-  # Cleanup old branches
-  cleanup-branches:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule'
-    
-    steps:
-      - name: Cleanup old branches
-        run: |
-          # This would require GitHub API calls to delete old branches
-          # For now, we'll just log the action
-          echo "Cleanup of old branches should be done manually"
-          echo "Keep only main and testing branches"
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/executable-windows/*
+            dist/executable-ubuntu-latest/*
+          body_path: CHANGELOG.md
