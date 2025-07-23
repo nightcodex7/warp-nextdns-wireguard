@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-<<<<<<< HEAD
 """
 Build script for WARP + NextDNS Manager
 Creates executable files and handles releases
@@ -10,479 +9,330 @@ import sys
 import subprocess
 import platform
 import shutil
-from pathlib import Path
-from datetime import datetime
-
-def run_command(cmd, check=True):
-    """Run a command and handle errors"""
-    try:
-        result = subprocess.run(cmd, shell=True, check=check, capture_output=True, text=True)
-        return result.stdout.strip()
-    except subprocess.CalledProcessError as e:
-        print(f"Command failed: {cmd}")
-        print(f"Error: {e.stderr}")
-        if check:
-            sys.exit(1)
-        return None
-
-def get_version():
-    """Get version from VERSION file"""
-    with open("VERSION", "r") as f:
-        return f.read().strip()
-
-def clean_build():
-    """Clean build artifacts"""
-    print("🧹 Cleaning build artifacts...")
-    
-    # Remove build directories
-    dirs_to_clean = ["build", "dist", "__pycache__", "*.egg-info"]
-    for pattern in dirs_to_clean:
-        if "*" in pattern:
-            for path in Path(".").glob(pattern):
-                if path.is_dir():
-                    shutil.rmtree(path, ignore_errors=True)
-                else:
-                    path.unlink(missing_ok=True)
-        else:
-            path = Path(pattern)
-            if path.exists():
-                shutil.rmtree(path, ignore_errors=True)
-
-def install_dependencies():
-    """Install build dependencies"""
-    print("Installing build dependencies...")
-    
-    # Install PyInstaller if not present
-    try:
-        import PyInstaller
-    except ImportError:
-        run_command("pip install pyinstaller")
-    
-    # Install other build tools
-    run_command("pip install -r requirements.txt")
-
-def build_executable():
-    """Build executable using PyInstaller"""
-    print("Building executable...")
-    
-    version = get_version()
-    system = platform.system().lower()
-    arch = platform.machine().lower()
-    
-    # PyInstaller command
-    cmd = [
-        "pyinstaller",
-        "--onefile",
-        "--name=warp-nextdns",
-        f"--version-file=VERSION",
-        "--add-data=utils:utils",
-        "--hidden-import=click",
-        "--hidden-import=rich",
-        "--hidden-import=requests",
-        "--hidden-import=yaml",
-        "--hidden-import=psutil",
-        "cli.py"
-    ]
-    
-    if system == "windows":
-        cmd.extend(["--windowed"])
-    
-    run_command(" ".join(cmd))
-    
-    # Move executable to dist directory
-    dist_dir = Path("dist")
-    dist_dir.mkdir(exist_ok=True)
-    
-    executable_name = "warp-nextdns"
-    if system == "windows":
-        executable_name += ".exe"
-    
-    source = Path("dist") / executable_name
-    if source.exists():
-        print(f"✅ Executable built: {source}")
-        return source
-    else:
-        print("❌ Executable build failed")
-        return None
-
-def create_changelog():
-    """Create changelog from git commits"""
-    print("Creating changelog...")
-    
-    version = get_version()
-    
-    # Get commits since last tag
-    try:
-        commits = run_command(f"git log --oneline --since='$(git describe --tags --abbrev=0 2>/dev/null || echo HEAD~10)'")
-    except:
-        commits = run_command("git log --oneline -10")
-    
-    changelog_content = f"""# Changelog for v{version}
-
-## Release Date: {datetime.now().strftime('%Y-%m-%d')}
-
-### Changes:
-"""
-    
-    if commits:
-        for commit in commits.split('\n'):
-            if commit.strip():
-                changelog_content += f"- {commit.strip()}\n"
-    
-    changelog_content += f"""
-### System Requirements:
-- Python 3.7+
-- Linux, Windows, or macOS
-- Elevated privileges for installation
-
-### Installation:
-1. Download the appropriate executable for your system
-2. Run with elevated privileges (sudo/admin)
-3. Follow the setup wizard
-
-### Features:
-- Automatic WGCF installation and configuration
-- NextDNS integration
-- Cross-platform support
-- Auto-start configuration
-- Service management
-"""
-    
-    with open("CHANGELOG.md", "w") as f:
-        f.write(changelog_content)
-    
-    print("✅ Changelog created: CHANGELOG.md")
-    return "CHANGELOG.md"
-
-def create_release_assets():
-    """Create release assets"""
-    print("Creating release assets...")
-    
-    version = get_version()
-    system = platform.system().lower()
-    arch = platform.machine().lower()
-    
-    # Create release directory
-    release_dir = Path(f"release-v{version}")
-    release_dir.mkdir(exist_ok=True)
-    
-    # Copy executable
-    executable = build_executable()
-    if executable:
-        shutil.copy2(executable, release_dir / executable.name)
-    
-    # Copy changelog
-    changelog = create_changelog()
-    if changelog:
-        shutil.copy2(changelog, release_dir / "CHANGELOG.md")
-    
-    # Copy README
-    shutil.copy2("README.md", release_dir / "README.md")
-    
-    # Create install script
-    install_script = f"""#!/bin/bash
-# WARP + NextDNS Manager Installer v{version}
-
-echo "Installing WARP + NextDNS Manager v{version}..."
-
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root (sudo)"
-    exit 1
-fi
-
-# Copy executable to /usr/local/bin
-cp warp-nextdns /usr/local/bin/
-chmod +x /usr/local/bin/warp-nextdns
-
-echo "Installation complete!"
-echo "Run 'warp-nextdns setup' to configure"
-"""
-    
-    with open(release_dir / "install.sh", "w") as f:
-        f.write(install_script)
-    
-    os.chmod(release_dir / "install.sh", 0o755)
-    
-    print(f"✅ Release assets created in: {release_dir}")
-    return release_dir
-
-def create_github_release():
-    """Create GitHub release"""
-    print("Creating GitHub release...")
-    
-    version = get_version()
-    
-    # Create git tag
-    run_command(f"git tag v{version}")
-    run_command(f"git push origin v{version}")
-    
-    # Create release assets
-    release_dir = create_release_assets()
-    
-    # Create release using GitHub CLI (if available)
-    if shutil.which("gh"):
-        title = f"WARP + NextDNS Manager v{version}"
-        body = f"""## What's New in v{version}
-
-This release includes:
-- Enhanced installation process
-- Automatic privilege elevation
-- Improved cross-platform support
-- Better error handling and logging
-
-## Installation
-
-1. Download the appropriate executable for your system
-2. Run with elevated privileges
-3. Follow the setup wizard
-
-See CHANGELOG.md for detailed changes.
-"""
-        
-        cmd = f'gh release create v{version} --title "{title}" --notes "{body}" --draft'
-        run_command(cmd)
-        
-        # Upload assets
-        for asset in release_dir.glob("*"):
-            if asset.is_file():
-                run_command(f'gh release upload v{version} "{asset}"')
-    
-    print("✅ GitHub release created")
-
-def main():
-    """Main build function"""
-    import argparse
-    
-    parser = argparse.ArgumentParser(description="Build WARP + NextDNS Manager")
-    parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
-    parser.add_argument("--build", action="store_true", help="Build executable")
-    parser.add_argument("--release", action="store_true", help="Create release assets")
-    parser.add_argument("--github", action="store_true", help="Create GitHub release")
-    parser.add_argument("--all", action="store_true", help="Run all build steps")
-    
-    args = parser.parse_args()
-    
-    if args.all or not any([args.clean, args.build, args.release, args.github]):
-        args.clean = True
-        args.build = True
-        args.release = True
-    
-    if args.clean:
-        clean_build()
-    
-    if args.build:
-        install_dependencies()
-        build_executable()
-    
-    if args.release:
-        create_release_assets()
-    
-    if args.github:
-        create_github_release()
-    
-    print("🎉 Build completed successfully!")
-
-if __name__ == "__main__":
-    main() 
-=======
-"""Build script for creating WARP NextDNS Manager executables."""
-import os
-import sys
-import shutil
-import subprocess
-import platform
-from pathlib import Path
 import zipfile
 import tarfile
-
+from pathlib import Path
+from datetime import datetime
+from typing import Optional, Dict, Any
 
 class Builder:
-    """Build manager for creating releases."""
+    """Build system for WARP + NextDNS Manager"""
     
     def __init__(self):
-        self.root_dir = Path(__file__).parent
-        self.dist_dir = self.root_dir / "dist"
-        self.build_dir = self.root_dir / "build"
+        self.project_root = Path(__file__).parent
         self.version = self.get_version()
-        self.platform = platform.system().lower()
-        self.arch = self.get_architecture()
+        self.system = platform.system().lower()
+        self.arch = platform.machine().lower()
+        self.build_dir = self.project_root / "build"
+        self.dist_dir = self.project_root / "dist"
+        self.release_dir = self.project_root / "release"
         
     def get_version(self) -> str:
-        """Get version from VERSION file."""
-        version_file = self.root_dir / "VERSION"
+        """Get version from VERSION file"""
+        version_file = self.project_root / "VERSION"
         if version_file.exists():
             return version_file.read_text().strip()
         return "1.0.0"
     
     def get_architecture(self) -> str:
-        """Get system architecture."""
-        machine = platform.machine().lower()
+        """Get system architecture"""
         arch_map = {
             'x86_64': 'amd64',
-            'amd64': 'amd64',
-            'i386': '386',
-            'i686': '386',
+            'AMD64': 'amd64',
             'aarch64': 'arm64',
             'arm64': 'arm64',
+            'i386': 'i386',
+            'i686': 'i386'
         }
-        return arch_map.get(machine, 'amd64')
+        return arch_map.get(self.arch, self.arch)
     
     def clean(self):
-        """Clean build artifacts."""
+        """Clean build artifacts"""
         print("🧹 Cleaning build artifacts...")
-        for path in [self.dist_dir, self.build_dir]:
-            if path.exists():
-                shutil.rmtree(path)
         
-        # Clean Python cache
-        for cache_dir in self.root_dir.rglob("__pycache__"):
-            shutil.rmtree(cache_dir)
-    
-    def install_dependencies(self):
-        """Install build dependencies."""
-        print("📦 Installing dependencies...")
-        subprocess.run([
-            sys.executable, "-m", "pip", "install", 
-            "-r", "requirements.txt", 
-            "pyinstaller>=5.0"
-        ], check=True)
-    
-    def build_executable(self):
-        """Build executable using PyInstaller."""
-        print(f"🔨 Building executable for {self.platform} ({self.arch})...")
-        
-        # Create dist directory
-        self.dist_dir.mkdir(exist_ok=True)
-        
-        # PyInstaller options
-        pyinstaller_args = [
-            "pyinstaller",
-            "--onefile",
-            "--name", f"warp-nextdns-{self.platform}-{self.arch}",
-            "--distpath", str(self.dist_dir),
-            "--workpath", str(self.build_dir),
-            "--clean",
-            "--noconfirm",
-            "--add-data", f"VERSION{os.pathsep}.",
-            "--add-data", f"README.md{os.pathsep}.",
-            "--hidden-import", "click",
-            "--hidden-import", "rich",
-            "--hidden-import", "requests",
-            "--hidden-import", "psutil",
+        dirs_to_clean = [
+            self.build_dir,
+            self.dist_dir,
+            self.project_root / "__pycache__",
+            self.project_root / "*.egg-info"
         ]
         
-        # Platform-specific options
-        if self.platform == "windows":
-            pyinstaller_args.extend([
-                "--icon", "NONE",  # Add icon if available
-                "--uac-admin",  # Request admin privileges
-            ])
-        elif self.platform in ["linux", "darwin"]:
-            pyinstaller_args.extend([
-                "--strip",  # Strip symbols
-            ])
+        for path in dirs_to_clean:
+            if path.exists():
+                if path.is_dir():
+                    shutil.rmtree(path, ignore_errors=True)
+                else:
+                    path.unlink(missing_ok=True)
         
-        # Add main script
-        pyinstaller_args.append("main.py")
+        # Clean glob patterns
+        for pattern in ["*.egg-info", "*.spec"]:
+            for path in self.project_root.glob(pattern):
+                if path.is_dir():
+                    shutil.rmtree(path, ignore_errors=True)
+                else:
+                    path.unlink(missing_ok=True)
+    
+    def install_dependencies(self):
+        """Install build dependencies"""
+        print("📦 Installing build dependencies...")
         
-        # Run PyInstaller
-        subprocess.run(pyinstaller_args, check=True)
+        # Install PyInstaller if not present
+        try:
+            import PyInstaller
+        except ImportError:
+            self.run_command("pip install pyinstaller")
         
-        # Clean up spec file
-        spec_file = self.root_dir / f"warp-nextdns-{self.platform}-{self.arch}.spec"
-        if spec_file.exists():
-            spec_file.unlink()
+        # Install other build tools
+        self.run_command("pip install -r requirements.txt")
+    
+    def run_command(self, cmd: str, check: bool = True) -> Optional[str]:
+        """Run a command and handle errors"""
+        try:
+            print(f"Running: {cmd}")
+            result = subprocess.run(cmd, shell=True, check=check, capture_output=True, text=True)
+            return result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            print(f"Command failed: {cmd}")
+            print(f"Error: {e.stderr}")
+            if check:
+                sys.exit(1)
+            return None
+    
+    def build_executable(self):
+        """Build executable using PyInstaller"""
+        print("🔨 Building executable...")
+        
+        # Create build directories
+        self.build_dir.mkdir(exist_ok=True)
+        self.dist_dir.mkdir(exist_ok=True)
+        
+        # PyInstaller command
+        cmd_parts = [
+            "pyinstaller",
+            "--onefile",
+            "--name=warp-nextdns-manager",
+            f"--version-file=VERSION",
+            "--add-data=utils:utils",
+            "--hidden-import=click",
+            "--hidden-import=rich",
+            "--hidden-import=requests",
+            "--hidden-import=yaml",
+            "--hidden-import=psutil",
+            "--hidden-import=utils.platform_utils",
+            "--hidden-import=utils.installer_manager",
+            "--hidden-import=utils.wgcf_manager",
+            "--hidden-import=utils.nextdns_manager",
+            "--hidden-import=utils.error_handler",
+            "--hidden-import=utils.navigation_manager",
+            "--hidden-import=utils.backup_manager",
+            "--hidden-import=utils.network_monitor",
+            "--hidden-import=utils.security_manager",
+            "--hidden-import=utils.auto_responder",
+            "cli.py"
+        ]
+        
+        if self.system == "windows":
+            cmd_parts.extend(["--windowed"])
+        
+        cmd = " ".join(cmd_parts)
+        self.run_command(cmd)
+        
+        # Move executable to release directory
+        self.release_dir.mkdir(exist_ok=True)
+        platform_dir = self.release_dir / self.system
+        platform_dir.mkdir(exist_ok=True)
+        
+        executable_name = "warp-nextdns-manager"
+        if self.system == "windows":
+            executable_name += ".exe"
+        
+        source = self.dist_dir / executable_name
+        if source.exists():
+            dest = platform_dir / executable_name
+            shutil.move(str(source), str(dest))
+            print(f"✅ Executable created: {dest}")
+        else:
+            print(f"❌ Executable not found: {source}")
+    
+    def create_install_scripts(self):
+        """Create platform-specific install scripts"""
+        print("📝 Creating install scripts...")
+        
+        # Windows install script
+        if self.system == "windows":
+            install_script = self.release_dir / "windows" / "install.bat"
+            install_content = f"""@echo off
+echo Installing WARP + NextDNS Manager...
+echo Version: {self.version}
+echo.
+
+REM Check if running as administrator
+net session >nul 2>&1
+if %errorLevel% == 0 (
+    echo Running as administrator
+) else (
+    echo Please run as administrator
+    pause
+    exit /b 1
+)
+
+REM Install Python dependencies
+pip install -r requirements.txt
+
+REM Make executable
+warp-nextdns-manager.exe setup --auto
+
+echo.
+echo Installation completed!
+pause
+"""
+            install_script.write_text(install_content)
+        
+        # Linux install script
+        else:
+            install_script = self.release_dir / "linux" / "install.sh"
+            install_content = f"""#!/bin/bash
+echo "Installing WARP + NextDNS Manager..."
+echo "Version: {self.version}"
+echo
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root (use sudo)"
+    exit 1
+fi
+
+# Install Python dependencies
+pip3 install -r requirements.txt
+
+# Make executable
+chmod +x warp-nextdns-manager
+./warp-nextdns-manager setup --auto
+
+echo
+echo "Installation completed!"
+"""
+            install_script.write_text(install_content)
+            # Make executable
+            install_script.chmod(0o755)
     
     def create_archive(self):
-        """Create release archive with executable and changelog."""
+        """Create release archive"""
         print("📦 Creating release archive...")
         
-        exe_name = f"warp-nextdns-{self.platform}-{self.arch}"
-        if self.platform == "windows":
-            exe_name += ".exe"
+        arch_name = f"warp-nextdns-manager-{self.version}-{self.system}-{self.get_architecture()}"
+        archive_path = self.release_dir / f"{arch_name}.zip"
         
-        exe_path = self.dist_dir / exe_name
-        if not exe_path.exists():
-            raise FileNotFoundError(f"Executable not found: {exe_path}")
+        with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Add executable
+            platform_dir = self.release_dir / self.system
+            for file in platform_dir.iterdir():
+                if file.is_file():
+                    zipf.write(file, file.name)
+            
+            # Add install script
+            install_script = platform_dir / ("install.bat" if self.system == "windows" else "install.sh")
+            if install_script.exists():
+                zipf.write(install_script, install_script.name)
+            
+            # Add README
+            readme = self.project_root / "README.md"
+            if readme.exists():
+                zipf.write(readme, "README.md")
+            
+            # Add requirements
+            requirements = self.project_root / "requirements.txt"
+            if requirements.exists():
+                zipf.write(requirements, "requirements.txt")
         
-        # Prepare files for archive
-        archive_name = f"warp-nextdns-v{self.version}-{self.platform}-{self.arch}"
-        archive_dir = self.dist_dir / archive_name
-        archive_dir.mkdir(exist_ok=True)
+        print(f"✅ Archive created: {archive_path}")
+    
+    def create_changelog(self):
+        """Create changelog for release"""
+        print("📋 Creating changelog...")
         
-        # Copy files to archive directory
-        shutil.copy2(exe_path, archive_dir / exe_name)
-        
-        # Create or copy CHANGELOG.md
-        changelog = self.root_dir / "CHANGELOG.md"
-        if changelog.exists():
-            shutil.copy2(changelog, archive_dir / "CHANGELOG.md")
-        else:
-            # Create a simple changelog
-            with open(archive_dir / "CHANGELOG.md", "w") as f:
-                f.write(f"# Changelog\n\n## v{self.version}\n\n- Initial release\n")
-        
-        # Create README for the archive
-        with open(archive_dir / "README.txt", "w") as f:
-            f.write(f"""WARP NextDNS Manager v{self.version}
-================================
-
-Platform: {self.platform} ({self.arch})
-
-Usage:
-------
-Run the executable with --help to see all available commands:
-    ./{exe_name} --help
-
-Quick setup:
-    sudo ./{exe_name} setup --auto
-
-For more information, visit:
-https://github.com/nightcodex7/warp-nextdns-wireguard
-""")
-        
-        # Create archive
-        if self.platform == "windows":
-            # Create ZIP for Windows
-            zip_path = self.dist_dir / f"{archive_name}.zip"
-            with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-                for file in archive_dir.rglob("*"):
-                    if file.is_file():
-                        arcname = file.relative_to(archive_dir.parent)
-                        zf.write(file, arcname)
-            print(f"✅ Created: {zip_path}")
-        else:
-            # Create tar.gz for Linux/macOS
-            tar_path = self.dist_dir / f"{archive_name}.tar.gz"
-            with tarfile.open(tar_path, "w:gz") as tar:
-                tar.add(archive_dir, arcname=archive_name)
-            print(f"✅ Created: {tar_path}")
-        
-        # Clean up temporary directory
-        shutil.rmtree(archive_dir)
+        changelog_file = self.project_root / "CHANGELOG.md"
+        if changelog_file.exists():
+            changelog_content = changelog_file.read_text()
+            
+            # Extract version section
+            lines = changelog_content.split('\n')
+            version_section = []
+            in_version = False
+            
+            for line in lines:
+                if line.startswith(f"## [{self.version}]"):
+                    in_version = True
+                    version_section.append(line)
+                elif in_version and line.startswith("## ["):
+                    break
+                elif in_version:
+                    version_section.append(line)
+            
+            if version_section:
+                changelog = '\n'.join(version_section).strip()
+                changelog_file = self.release_dir / "CHANGELOG.md"
+                changelog_file.write_text(changelog)
+                print(f"✅ Changelog created: {changelog_file}")
     
     def build(self):
-        """Run the complete build process."""
-        print(f"🚀 Building WARP NextDNS Manager v{self.version}")
-        print(f"📍 Platform: {self.platform} ({self.arch})")
+        """Complete build process"""
+        print(f"🚀 Starting build for {self.system} {self.get_architecture()}")
+        print(f"Version: {self.version}")
         print()
         
         try:
+            # Clean previous builds
             self.clean()
+            
+            # Install dependencies
             self.install_dependencies()
+            
+            # Build executable
             self.build_executable()
+            
+            # Create install scripts
+            self.create_install_scripts()
+            
+            # Create archive
             self.create_archive()
             
-            print("\n✨ Build completed successfully!")
-            print(f"📁 Output directory: {self.dist_dir}")
+            # Create changelog
+            self.create_changelog()
+            
+            print()
+            print("🎉 Build completed successfully!")
+            print(f"Release files: {self.release_dir}")
             
         except Exception as e:
-            print(f"\n❌ Build failed: {e}")
+            print(f"❌ Build failed: {e}")
             sys.exit(1)
 
+def main():
+    """Main build function"""
+    if len(sys.argv) > 1:
+        command = sys.argv[1].lower()
+        
+        builder = Builder()
+        
+        if command == "clean":
+            builder.clean()
+        elif command == "deps":
+            builder.install_dependencies()
+        elif command == "build":
+            builder.build_executable()
+        elif command == "archive":
+            builder.create_archive()
+        elif command == "full":
+            builder.build()
+        else:
+            print(f"Unknown command: {command}")
+            print("Available commands: clean, deps, build, archive, full")
+            sys.exit(1)
+    else:
+        # Default: full build
+        builder = Builder()
+        builder.build()
 
 if __name__ == "__main__":
-    builder = Builder()
-    builder.build()
->>>>>>> 6f8763ed9c292fb062677073732ac3e864bb795d
+    main()
