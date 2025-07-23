@@ -270,38 +270,75 @@ class WarpNextDNSManager:
             return False
     
     def get_status(self) -> Dict[str, Any]:
-        """Get current system status"""
+        """Get current system status with modern UI format"""
         logger.info("Getting system status...")
         
-        status = {
-            'timestamp': datetime.now().isoformat(),
-            'platform': platform.system(),
-            'architecture': platform.machine(),
-            'python_version': platform.python_version(),
-            'services': {},
-            'tools': {},
-            'network': {}
-        }
-        
         try:
-            # Check service status
-            status['services']['warp'] = self.wgcf_manager.get_service_status()
-            status['services']['nextdns'] = self.nextdns_manager.get_service_status()
+            # Get service statuses
+            warp_status = self.wgcf_manager.get_service_status()
+            nextdns_status = self.nextdns_manager.get_service_status()
             
-            # Check tool availability
-            status['tools']['wgcf'] = self.wgcf_manager.is_installed()
-            status['tools']['nextdns'] = self.nextdns_manager.is_installed()
+            # Get tool availability
+            wgcf_installed = self.wgcf_manager.is_installed()
+            nextdns_installed = self.nextdns_manager.is_installed()
             
-            # Check network status
-            status['network']['internet'] = self.check_internet_connection()
-            status['network']['warp_ip'] = self.get_warp_ip()
-            status['network']['dns_servers'] = self.get_dns_servers()
+            # Get network status
+            internet_connected = self.check_internet_connection()
+            warp_ip = self.get_warp_ip()
+            dns_servers = self.get_dns_servers()
+            
+            # Format for modern UI
+            status = {
+                'System': {
+                    'status': 'Active',
+                    'details': f"{platform.system()} {platform.machine()} - Python {platform.python_version()}"
+                },
+                'WARP Service': {
+                    'status': 'Running' if warp_status.get('running', False) else 'Stopped',
+                    'details': warp_status.get('details', 'Service status unknown')
+                },
+                'NextDNS Service': {
+                    'status': 'Running' if nextdns_status.get('running', False) else 'Stopped',
+                    'details': nextdns_status.get('details', 'Service status unknown')
+                },
+                'WGCF Tool': {
+                    'status': 'Installed' if wgcf_installed else 'Not Installed',
+                    'details': 'WireGuard configuration tool'
+                },
+                'NextDNS Tool': {
+                    'status': 'Installed' if nextdns_installed else 'Not Installed',
+                    'details': 'DNS filtering tool'
+                },
+                'Internet Connection': {
+                    'status': 'Connected' if internet_connected else 'Disconnected',
+                    'details': 'Network connectivity check'
+                },
+                'WARP IP': {
+                    'status': 'Active' if warp_ip else 'Inactive',
+                    'details': warp_ip or 'No WARP IP detected'
+                },
+                'DNS Servers': {
+                    'status': 'Configured' if dns_servers else 'Not Configured',
+                    'details': ', '.join(dns_servers) if dns_servers else 'No DNS servers found'
+                }
+            }
+            
+            # Add timestamp
+            status['Last Updated'] = {
+                'status': datetime.now().strftime('%H:%M:%S'),
+                'details': 'Real-time status'
+            }
+            
+            return status
             
         except Exception as e:
             logger.error(f"Failed to get status: {e}")
-            status['error'] = str(e)
-        
-        return status
+            return {
+                'Error': {
+                    'status': 'Failed',
+                    'details': f"Status check failed: {str(e)}"
+                }
+            }
     
     def check_internet_connection(self) -> bool:
         """Check internet connectivity"""
