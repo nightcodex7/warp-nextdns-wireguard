@@ -17,8 +17,7 @@ mypy>=1.0.0,<2.0.0
 bandit>=1.7.0,<2.0.0
 
 # Documentation
-mkdocs>=1.4.0,<2.0.0
-mkdocs-material>=9.0.0,<10.0.0
+
 
 # Build tools
 pyinstaller>=5.0.0,<6.0.0

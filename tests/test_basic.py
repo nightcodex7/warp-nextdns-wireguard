@@ -259,10 +259,12 @@ class TestFileStructure:
         for dep in essential_deps:
             assert dep in requirements, f"Missing essential dependency: {dep}"
     
-    def test_mkdocs_config(self):
-        """Test that mkdocs.yml exists"""
-        mkdocs_file = Path(__file__).parent.parent / 'mkdocs.yml'
-        assert mkdocs_file.exists(), "mkdocs.yml file should exist"
+    def test_static_website_files(self):
+        """Test that static website files exist"""
+        docs_dir = Path(__file__).parent.parent / 'docs'
+        assert docs_dir.exists(), "docs directory should exist"
+        assert (docs_dir / 'index.html').exists(), "index.html should exist"
+        assert (docs_dir / 'styles.css').exists(), "styles.css should exist"
     
     def test_readme_file(self):
         """Test that README.md exists and is valid"""
