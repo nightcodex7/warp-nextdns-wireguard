@@ -7,21 +7,26 @@ repo_name: nightcodex7/warp-nextdns-wireguard
 repo_url: https://github.com/nightcodex7/warp-nextdns-wireguard
 edit_uri: edit/testing/docs/
 
+extra_css:
+  - stylesheets/extra.css
+
 theme:
   name: material
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to dark mode
+    # Dark mode (default)
     - scheme: slate
       primary: indigo
       accent: indigo
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to light mode
+    # Light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
 
   features:
     - navigation.tabs
@@ -32,6 +37,9 @@ theme:
     - search.highlight
     - content.code.copy
     - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
 
   icon:
     repo: fontawesome/brands/github

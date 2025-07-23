@@ -1,0 +1,233 @@
+/* Custom styles to match GHOST PASS website design */
+
+/* Ensure dark theme is properly applied */
+[data-md-color-scheme="slate"] {
+    --md-default-bg-color: #1a1a1a;
+    --md-default-fg-color: #ffffff;
+    --md-primary-fg-color: #667eea;
+    --md-primary-bg-color: #ffffff;
+    --md-accent-fg-color: #764ba2;
+}
+
+/* Hero section styling */
+.md-typeset h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Button styling */
+.md-button {
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.md-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.md-button--primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white !important;
+}
+
+/* Feature cards styling */
+.grid.cards {
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.grid.cards > * {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.grid.cards > *:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+/* Code block styling */
+.md-typeset code {
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 6px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.9em;
+    color: #667eea;
+}
+
+.md-typeset pre {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.md-typeset pre code {
+    background: transparent;
+    border: none;
+    color: inherit;
+}
+
+/* Section headers */
+.md-typeset h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin: 3rem 0 1.5rem 0;
+    color: #667eea;
+}
+
+.md-typeset h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+    color: #764ba2;
+}
+
+/* Navigation styling */
+.md-nav__title {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.md-nav__link {
+    transition: color 0.3s ease;
+}
+
+.md-nav__link:hover {
+    color: #667eea;
+}
+
+/* Footer styling */
+.md-footer {
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Admonition styling */
+.md-typeset .admonition {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.md-typeset .admonition-title {
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+}
+
+/* Table styling */
+.md-typeset table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.md-typeset table th {
+    background: rgba(102, 126, 234, 0.1);
+    font-weight: 600;
+}
+
+/* Link styling */
+.md-typeset a {
+    color: #667eea;
+    transition: color 0.3s ease;
+}
+
+.md-typeset a:hover {
+    color: #764ba2;
+    text-decoration: none;
+}
+
+/* Custom gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Stats section */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Ensure proper dark theme for all elements */
+[data-md-color-scheme="slate"] .md-typeset {
+    color: rgba(255, 255, 255, 0.87);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1,
+[data-md-color-scheme="slate"] .md-typeset h2,
+[data-md-color-scheme="slate"] .md-typeset h3,
+[data-md-color-scheme="slate"] .md-typeset h4,
+[data-md-color-scheme="slate"] .md-typeset h5,
+[data-md-color-scheme="slate"] .md-typeset h6 {
+    color: rgba(255, 255, 255, 0.87);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .md-typeset h1 {
+        font-size: 2rem;
+    }
+    
+    .md-typeset h2 {
+        font-size: 1.8rem;
+    }
+    
+    .grid.cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+} 
