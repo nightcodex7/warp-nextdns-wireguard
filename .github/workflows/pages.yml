@@ -28,6 +28,8 @@ jobs:
           ls -la docs/
           echo "Files in docs directory:"
           find docs/ -type f -name "*.html" -o -name "*.css" -o -name "*.md" | head -10
+          echo "Checking for .nojekyll file:"
+          ls -la docs/.nojekyll || echo "No .nojekyll file found"
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
