@@ -1,114 +1,63 @@
 # WARP + NextDNS Manager
 
-> **Secure internet with Cloudflare WARP and NextDNS**
+> **Unified Documentation Hub**
 
-A powerful, cross-platform tool that combines Cloudflare WARP's encrypted tunneling with NextDNS's customizable DNS filtering for maximum privacy and security.
+Welcome to the official documentation for the WARP + NextDNS Manager project.
 
-## 🌟 Features
+## 🚀 Overview
 
-- **🔐 Encrypted Internet Traffic** - All traffic routed through Cloudflare WARP
-- **🛡️ Custom DNS Filtering** - NextDNS integration for ad/tracker blocking
-- **⚡ Automatic Setup** - One-command installation and configuration
-- **🔄 Cross-Platform** - Works on Linux, Windows, and macOS
-- **🚀 Auto-Start** - Automatic service management and boot-time startup
-- **📊 Real-time Monitoring** - Live status and connection testing
+WARP + NextDNS Manager is an all-in-one tool for setting up, configuring, and managing Cloudflare WARP and NextDNS via WireGuard on Linux, Windows, and macOS. It features automatic elevation, smart downloads, non-interactive installation, and a rich CLI interface.
 
-## 🚀 Quick Start
+- **Cross-platform**: Linux, Windows, macOS
+- **Automatic elevation**: Handles privilege escalation
+- **Smart downloads**: Detects OS/arch and handles compression
+- **Unified CLI**: Setup, start, stop, status, logs, test, uninstall
+- **Professional documentation**: GitHub Pages, MkDocs, and more
 
-### Prerequisites
+## 📚 Documentation
 
-- Python 3.7 or higher
-- Elevated privileges (sudo/admin)
-- Internet connection
-- NextDNS profile ID
+- [Installation Guide](installation.md)
+- [Usage Guide](usage.md)
+- [Configuration Guide](configuration.md)
+- [Troubleshooting Guide](troubleshooting.md)
+- [API Reference](api.md)
+- [Contributing Guide](contributing.md)
+- [Changelog](changelog.md)
 
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
-cd warp-nextdns-wireguard
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run setup
-python cli.py setup
-```
-
-### Usage
+## 📝 Quick Start
 
 ```bash
-# Interactive setup
-python cli.py setup
+# Download the latest release
+wget https://github.com/nightcodex7/warp-nextdns-wireguard/releases/latest/download/warp-nextdns
+chmod +x warp-nextdns
 
-# Check status
-python cli.py status
+# Run setup (Linux/macOS)
+sudo ./warp-nextdns setup
 
-# Start services
-python cli.py start
-
-# Stop services
-python cli.py stop
-
-# Test connectivity
-python cli.py test
-
-# View logs
-python cli.py logs
+# Or run on Windows as Administrator
+warp-nextdns.exe setup
 ```
 
-## 📋 System Requirements
+## 🌐 GitHub Pages
 
-| Platform | Requirements |
-|----------|-------------|
-| **Linux** | Ubuntu 18.04+, Debian 10+, Fedora 30+, Arch Linux |
-| **Windows** | Windows 10/11 (64-bit) |
-| **macOS** | macOS 10.15+ |
+This documentation is unified and automatically deployed from the `testing` branch:
+- [https://nightcodex7.github.io/warp-nextdns-wireguard/](https://nightcodex7.github.io/warp-nextdns-wireguard/)
 
-## 🔧 Configuration
+## 🛠️ Project Links
 
-The tool automatically handles:
-
-- ✅ WGCF installation and WARP registration
-- ✅ WireGuard configuration
-- ✅ NextDNS CLI installation and setup
-- ✅ System service creation
-- ✅ Auto-start configuration
-- ✅ Network interface management
-
-## 📊 What You Get
-
-After setup, your internet traffic flows like this:
-
-```
-Your Device → WARP Tunnel → Cloudflare → Internet
-                ↓
-            NextDNS Filtering
-```
-
-This provides:
-
-- **Privacy**: Your IP is masked through Cloudflare's network
-- **Security**: All traffic is encrypted end-to-end
-- **Filtering**: DNS-level ad/tracker blocking via NextDNS
-- **Performance**: Low-latency routing through Cloudflare's global network
+- [GitHub Repository](https://github.com/nightcodex7/warp-nextdns-wireguard)
+- [Releases](https://github.com/nightcodex7/warp-nextdns-wireguard/releases)
+- [Issues](https://github.com/nightcodex7/warp-nextdns-wireguard/issues)
+- [Discussions](https://github.com/nightcodex7/warp-nextdns-wireguard/discussions)
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](contributing.md) for details.
+We welcome contributions! See the [Contributing Guide](contributing.md) for details.
 
 ## 📄 License
 
-This project is licensed under the GNU General Public License v3 - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [WGCF](https://github.com/ViRb3/wgcf) by [@ViRb3](https://github.com/ViRb3)
-- [NextDNS](https://nextdns.io) for DNS filtering
-- [WireGuard](https://www.wireguard.com/) for VPN tunneling
-- [Cloudflare](https://www.cloudflare.com/) for WARP service
+This project is licensed under the GNU General Public License v3.
 
 ---
 
-**Made with ❤️ by [@nightcodex7](https://github.com/nightcodex7)** 
+**Maintained by [@nightcodex7](https://github.com/nightcodex7)** 

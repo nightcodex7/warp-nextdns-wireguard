@@ -99,4 +99,5 @@ nav:
   - Configuration: configuration.md
   - Troubleshooting: troubleshooting.md
   - API Reference: api.md
-  - Contributing: contributing.md 
+  - Contributing: contributing.md
+  - Changelog: changelog.md 
