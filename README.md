@@ -43,12 +43,27 @@
 git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
 cd warp-nextdns-wireguard
 
+# Choose your branch
+git checkout testing  # For development/testing (latest features)
+# OR
+git checkout main     # For stable releases
+
 # Install dependencies
 pip install -r requirements.txt
 
 # Run the CLI
 python cli.py
 ```
+
+### 🌿 Branching Strategy
+
+This project uses a **testing→main** workflow:
+
+- **`testing`**: Development branch with latest features and documentation
+- **`main`**: Stable production releases only
+- **Documentation**: Automatically deployed from `testing` branch to GitHub Pages
+
+For detailed information, see [BRANCHING_STRATEGY.md](BRANCHING_STRATEGY.md).
 
 ### Basic Usage
 

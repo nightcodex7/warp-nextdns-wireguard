@@ -6,6 +6,7 @@ on:
     paths:
       - 'docs/**'
       - '.github/workflows/docs-deploy.yml'
+      - 'BRANCHING_STRATEGY.md'
   workflow_dispatch:
     inputs:
       force_deploy:
