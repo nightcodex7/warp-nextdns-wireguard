@@ -7,6 +7,7 @@ Welcome to the official documentation for the WARP + NextDNS Manager project.
 - **[Home](index.html)** - Main landing page with project overview and features
 - **[Installation Guide](installation.html)** - Complete installation instructions for all platforms
 - **[Test Page](test.html)** - Test page to verify website functionality
+- **[Validation Page](validate.html)** - Comprehensive website validation and testing
 
 ## 🚀 Quick Links
 
