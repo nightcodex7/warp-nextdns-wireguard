@@ -23,13 +23,26 @@ jobs:
       
       - name: Verify static website
         run: |
-          echo "Static website is already built in /docs folder"
-          echo "No build process needed for static HTML/CSS website"
+          echo "=== Static Website Verification ==="
+          echo "Checking docs directory structure..."
           ls -la docs/
-          echo "Files in docs directory:"
-          find docs/ -type f -name "*.html" -o -name "*.css" -o -name "*.md" | head -10
+          echo ""
+          echo "HTML files found:"
+          find docs/ -name "*.html" -type f
+          echo ""
+          echo "CSS files found:"
+          find docs/ -name "*.css" -type f
+          echo ""
           echo "Checking for .nojekyll file:"
           ls -la docs/.nojekyll || echo "No .nojekyll file found"
+          echo ""
+          echo "Testing index.html accessibility:"
+          if [ -f "docs/index.html" ]; then
+            echo "✅ index.html exists and is accessible"
+          else
+            echo "❌ index.html not found!"
+            exit 1
+          fi
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
