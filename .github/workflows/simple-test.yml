@@ -1,0 +1,15 @@
+name: Simple Test
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  simple-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Simple test
+      run: |
+        echo "Hello from GitHub Actions!"
+        echo "This is a simple test workflow."
+        echo "If you see this, GitHub Actions is working!" 
