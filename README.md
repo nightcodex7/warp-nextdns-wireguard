@@ -47,27 +47,35 @@ cd warp-nextdns-wireguard
 pip install -r requirements.txt
 
 # Run the CLI
-python main.py
+python cli.py
 ```
 
 ### Basic Usage
 
 ```bash
 # Interactive setup (recommended for first-time users)
-python main.py interactive
+python cli.py setup
 
 # Check system status
-python main.py status
+python cli.py status
 
 # Live status monitoring
-python main.py monitor
+python cli.py logs
 
 # Individual commands
-python main.py install
-python main.py setup
-python main.py start
-python main.py stop
+python cli.py install
+python cli.py start
+python cli.py stop
+python cli.py test
 ```
+
+### 🌐 Website Documentation
+
+Visit our [modern documentation website](https://nightcodex7.github.io/warp-nextdns-wireguard/) for:
+- **Interactive installation guides** with platform-specific instructions
+- **Live terminal demos** showing the application in action
+- **Comprehensive feature documentation**
+- **Troubleshooting guides** and FAQs
 
 ---
 
@@ -108,27 +116,25 @@ python main.py stop
 | Command | Description |
 |---------|-------------|
 | `status` | Show current system status |
-| `install` | Interactive installation wizard |
-| `setup` | Setup WARP + NextDNS configuration |
+| `setup` | Interactive setup wizard |
+| `install` | Install WARP + NextDNS services |
 | `start` | Start WARP and NextDNS services |
 | `stop` | Stop WARP and NextDNS services |
 | `logs` | View application logs |
-| `interactive` | Launch interactive menu mode |
-| `monitor` | Live status monitoring |
+| `test` | Run connection and leak tests |
+| `version` | Display version information |
 
-### Interactive Mode Features
+### Setup Wizard Features
 
-The interactive mode provides a comprehensive menu system with:
+The setup wizard provides a comprehensive guided process with:
 
-1. **System Status** - Real-time status display
-2. **Installation** - Guided setup process
-3. **Service Management** - Start/stop services
-4. **Network Diagnostics** - Connection testing
-5. **Speed Testing** - Network performance measurement
-6. **Security Reports** - System security analysis
-7. **Backup Management** - Configuration backup/restore
-8. **Network Monitoring** - Continuous monitoring
-9. **Logs Viewer** - Application log analysis
+1. **System Detection** - Automatic platform and tool detection
+2. **WARP Registration** - Cloudflare WARP account setup
+3. **NextDNS Configuration** - DNS profile configuration
+4. **Service Installation** - Automatic service setup
+5. **Configuration Backup** - Secure backup creation
+6. **Testing & Validation** - Connection and leak testing
+7. **Status Monitoring** - Real-time service monitoring
 
 ### Options
 
@@ -161,16 +167,16 @@ The interactive mode provides a comprehensive menu system with:
    pip install -r requirements.txt
    ```
 
-3. **Run interactive setup**
+3. **Run setup wizard**
    ```bash
-   python main.py interactive
+   python cli.py setup
    ```
 
 4. **Follow the setup wizard**
-   - Install wgcf tool
-   - Register with WARP
-   - Generate WireGuard configuration
-   - Start services
+   - Automatic platform detection
+   - WARP registration and configuration
+   - NextDNS profile setup
+   - Service installation and testing
 
 ---
 
@@ -207,11 +213,14 @@ The application includes:
 ### Live Status Monitoring
 
 ```bash
-# Start live monitoring with 5-second refresh
-python main.py monitor
+# View real-time logs
+python cli.py logs
 
-# Custom refresh interval
-python main.py monitor --refresh 10
+# Check current status
+python cli.py status
+
+# Run connection tests
+python cli.py test
 ```
 
 ### Status Information
@@ -225,9 +234,11 @@ The status command provides:
 ### Network Diagnostics
 
 ```bash
-# Run network diagnostics
-python main.py interactive
-# Select option 6: Network diagnostics
+# Run connection tests
+python cli.py test
+
+# Check system status
+python cli.py status
 ```
 
 ---
@@ -245,9 +256,11 @@ python main.py interactive
 ### Security Reports
 
 ```bash
-# Generate security report
-python main.py interactive
-# Select option 8: Security report
+# Run security tests
+python cli.py test
+
+# Check system status
+python cli.py status
 ```
 
 ---
@@ -266,11 +279,10 @@ The application maintains comprehensive logs:
 
 ```bash
 # View recent logs
-python main.py logs
+python cli.py logs
 
-# Interactive log viewing
-python main.py interactive
-# Select option 11: View logs
+# Check system status
+python cli.py status
 ```
 
 ---
@@ -302,13 +314,12 @@ python main.py interactive
 
 2. **Run diagnostics**
    ```bash
-   python main.py interactive
-   # Select option 6: Network diagnostics
+   python cli.py test
    ```
 
 3. **Verify installation**
    ```bash
-   python main.py status
+   python cli.py status
    ```
 
 ---
