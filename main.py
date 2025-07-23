@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+<<<<<<< HEAD
 """
 WARP + NextDNS Manager - Main Entry Point
 """
@@ -13,3 +14,11 @@ from cli import main
 
 if __name__ == "__main__":
     main() 
+=======
+"""Main entry point for WARP NextDNS WireGuard Manager."""
+import sys
+from cli import cli
+
+if __name__ == "__main__":
+    sys.exit(cli())
+>>>>>>> 6f8763ed9c292fb062677073732ac3e864bb795d

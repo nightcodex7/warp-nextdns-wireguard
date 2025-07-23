@@ -27,8 +27,11 @@ share/python-wheels/
 MANIFEST
 
 # PyInstaller
+<<<<<<< HEAD
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
+=======
+>>>>>>> 6f8763ed9c292fb062677073732ac3e864bb795d
 *.manifest
 *.spec
 
@@ -51,6 +54,7 @@ coverage.xml
 .pytest_cache/
 cover/
 
+<<<<<<< HEAD
 # Translations
 *.mo
 *.pot
@@ -306,3 +310,54 @@ yarn-error.log*
 .Trashes
 ehthumbs.db
 Thumbs.db 
+=======
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+wgcf
+wgcf-account.toml
+wgcf-profile.conf
+*.tar.gz
+*.zip
+*.bak
+*.log
+
+# Temporary files
+*.tmp
+.temp/
+
+# OS specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Documentation builds
+docs/_build/
+site/
+
+# Node modules (for website)
+node_modules/
+.npm
+.yarn
+
+# Build artifacts
+release/linux/*.deb
+release/linux/*.rpm
+release/windows/*.exe
+release/windows/*.msi
+
+# Config backups
+warp-nextdns-backup*
+>>>>>>> 6f8763ed9c292fb062677073732ac3e864bb795d
