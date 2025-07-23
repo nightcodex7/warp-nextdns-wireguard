@@ -1,203 +1,362 @@
-# WARP + NextDNS via WireGuard on Linux (Mint 22.1 Tested)
+# WARP + NextDNS Manager
 
+> **Enterprise-Grade Cloudflare WARP + NextDNS Integration**  
 > **Project by** [@nightcodex7](https://github.com/nightcodex7)
+
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-2.0.0-orange.svg)](VERSION)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey.svg)](https://github.com/nightcodex7/warp-nextdns-wireguard)
+[![Buy Me a Coffee](https://img.shields.io/badge/☕-Buy%20Me%20a%20Coffee-orange?style=for-the-badge)](https://buymeacoffee.com/nightcode)
+[![Ko-fi](https://img.shields.io/badge/💙-Support%20on%20Ko--fi-blue?style=for-the-badge)](https://ko-fi.com/nightcode)
 
 ---
 
-## 🌐 Overview
+## 🌟 Overview
 
-This guide enables full Cloudflare WARP tunneling via WireGuard on Linux **with NextDNS integration** — giving you:
+**WARP + NextDNS Manager** is a comprehensive, enterprise-grade CLI application that enables full Cloudflare WARP tunneling via WireGuard **with advanced NextDNS integration** — providing you with:
 
 - 🔐 **Encrypted Internet traffic** through Cloudflare WARP  
 - 🛡️ **Private, customizable DNS filtering** via your own [NextDNS](https://nextdns.io) profile  
-- 📶 Works on Wi-Fi, Ethernet, and mobile tethering  
-- ⚙️ Lightweight: No GUI needed, headless-friendly  
+- 📶 **Cross-platform support**: Linux, Windows, macOS
+- 💻 **Rich CLI interface** with dynamic status updates
+- 🎯 **Enterprise features**: Advanced monitoring, backup, and security
+- 🛠️ **Comprehensive error handling** with automatic recovery
+- 📊 **Real-time status monitoring** and detailed logging
+- 🔧 **Automated setup and configuration**
 
-Tested and stable on **Linux Mint 22.1 (Ubuntu-based)**, but adaptable to most modern Linux distros.
+### 🎯 Perfect For
 
----
-
-## Flow Diagram
-
-![How Internet Traffic is Routed through Cloudflare WARP and NextDNS)](https://github.com/user-attachments/assets/7058c8eb-76c4-456d-a3dc-a2e323a670eb)
-
-⚠️ **Disclaimer**: While this setup enhances privacy and security, **no configuration is 100% foolproof**. Always stay updated, monitor your traffic, and use additional security layers if needed.
-
----
-
-## ⚠️ Prerequisites
-
-Before starting this setup, make sure:
-
-- You already have **NextDNS CLI installed and configured**
-- Your `nextdns.conf` contains your **profile ID** and is working (test with `nextdns status`)
-- You are using **Linux Mint 22.1** or another modern systemd-based Linux distro
-- You have **basic terminal familiarity** and root/sudo access
+- **Privacy-conscious users** wanting more control over their internet traffic
+- **Power users, developers, and system administrators**
+- **Organizations** requiring secure, monitored network access
+- **Anyone** who wants **WARP + custom DNS** without relying on Cloudflare DNS
 
 ---
 
-## ❓ Why Use This
+## 🚀 Quick Start
 
-### ✅ WARP (Cloudflare)
-- Free VPN-like tunnel over WireGuard  
-- Encrypts traffic, bypasses basic firewalls, masks IP (somewhat)  
-- Low latency, ideal for gaming or public Wi-Fi use
-
-### ✅ NextDNS
-- DNS-level ad/tracker blocking  
-- Parental controls, analytics, and threat protection  
-- Fully customizable from your NextDNS dashboard
-
-### 💡 Combined Benefit
-
-> You route traffic through Cloudflare’s WARP tunnel **while still resolving DNS via your own NextDNS profile** — best of both worlds.
-
----
-
-## 🎯 Who This Is For
-
-- Linux users (Mint, Ubuntu, Debian, Arch, etc.)
-- Privacy-conscious users wanting more control
-- Power users, developers, pentesters, students
-- Anyone who wants **WARP + custom DNS** without relying on Cloudflare DNS
-
----
-
-## 📋 Setup Instructions
-
-### 🔧 1. Install & Register `wgcf`
+### Installation
 
 ```bash
-sudo apt update
-sudo apt install wireguard-tools curl
-wget -O wgcf https://github.com/ViRb3/wgcf/releases/latest/download/wgcf_amd64
-chmod +x wgcf
-./wgcf register
-./wgcf generate
+# Clone the repository
+git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the CLI
+python main.py
 ```
 
-➡️ This creates:
-
-- `wgcf-account.toml`
-- `wgcf-profile.conf`
-
----
-
-### ✏️ 2. Edit the WireGuard Profile
-
-The WireGuard config created by `wgcf` points to Cloudflare DNS by default.
-
-Since we're using NextDNS instead, edit the config:
+### Basic Usage
 
 ```bash
-nano wgcf-profile.conf
+# Interactive setup (recommended for first-time users)
+python main.py interactive
+
+# Check system status
+python main.py status
+
+# Live status monitoring
+python main.py monitor
+
+# Individual commands
+python main.py install
+python main.py setup
+python main.py start
+python main.py stop
 ```
-
-Find and **comment out** the DNS line:
-
-```ini
-#DNS = 1.1.1.1
-```
-
-Or optionally, set it to:
-
-```ini
-DNS = 127.0.0.1
-```
-
-> ✅ This allows all DNS resolution to go through your already-configured `nextdns-cli` running locally.
 
 ---
 
-### 📁 3. Move and Secure the Config
+## 🎨 Features
+
+### 💻 Command Line Interface
+- **Interactive mode** with guided setup and menu-driven interface
+- **Live status monitoring** with dynamic updates
+- **Individual commands** for automation and scripting
+- **JSON output** for integration with other tools
+- **Rich terminal interface** with progress indicators and tables
+- **Comprehensive error handling** with recovery suggestions
+- **Real-time network diagnostics** and speed testing
+- **Security reporting** and backup management
+
+### 🛠️ System Management
+- **Automatic tool detection** and installation
+- **Service management** with start/stop capabilities
+- **Configuration backup and restore**
+- **Network monitoring** with performance metrics
+- **Security validation** and certificate management
+- **Log management** with filtering and analysis
+
+### 🔧 Core Functionality
+- **WARP registration** and WireGuard configuration
+- **NextDNS integration** with custom profiles
+- **Cross-platform compatibility** (Linux, Windows, macOS)
+- **Real-time status updates** with live monitoring
+- **Error recovery** and automatic retry mechanisms
+- **Comprehensive logging** and debugging support
+
+---
+
+## 📋 Commands
+
+### Main Commands
+
+| Command | Description |
+|---------|-------------|
+| `status` | Show current system status |
+| `install` | Interactive installation wizard |
+| `setup` | Setup WARP + NextDNS configuration |
+| `start` | Start WARP and NextDNS services |
+| `stop` | Stop WARP and NextDNS services |
+| `logs` | View application logs |
+| `interactive` | Launch interactive menu mode |
+| `monitor` | Live status monitoring |
+
+### Interactive Mode Features
+
+The interactive mode provides a comprehensive menu system with:
+
+1. **System Status** - Real-time status display
+2. **Installation** - Guided setup process
+3. **Service Management** - Start/stop services
+4. **Network Diagnostics** - Connection testing
+5. **Speed Testing** - Network performance measurement
+6. **Security Reports** - System security analysis
+7. **Backup Management** - Configuration backup/restore
+8. **Network Monitoring** - Continuous monitoring
+9. **Logs Viewer** - Application log analysis
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output in JSON format |
+| `--verbose` | Verbose output |
+| `--refresh <seconds>` | Refresh interval for monitor mode |
+
+---
+
+## 🛠️ Installation
+
+### Prerequisites
+
+- **Python 3.8+**
+- **Administrator/root privileges** (for service management)
+- **Internet connection** (for initial setup)
+
+### Step-by-Step Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+   cd warp-nextdns-wireguard
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run interactive setup**
+   ```bash
+   python main.py interactive
+   ```
+
+4. **Follow the setup wizard**
+   - Install wgcf tool
+   - Register with WARP
+   - Generate WireGuard configuration
+   - Start services
+
+---
+
+## 🔧 Configuration
+
+### WARP Configuration
+
+The application automatically handles:
+- **wgcf installation** and setup
+- **WARP registration** with Cloudflare
+- **WireGuard configuration** generation
+- **Service management** and monitoring
+
+### NextDNS Configuration
+
+NextDNS integration provides:
+- **Custom DNS filtering** rules
+- **Privacy protection** and ad blocking
+- **Performance optimization**
+- **Real-time statistics** and monitoring
+
+### Backup and Recovery
+
+The application includes:
+- **Automatic backup** creation
+- **Configuration versioning**
+- **One-click restore** functionality
+- **Backup verification** and validation
+
+---
+
+## 📊 Monitoring
+
+### Live Status Monitoring
 
 ```bash
-sudo mkdir -p /etc/wireguard
-sudo cp wgcf-profile.conf /etc/wireguard/wgcf.conf
-sudo chmod 600 /etc/wireguard/wgcf.conf
+# Start live monitoring with 5-second refresh
+python main.py monitor
+
+# Custom refresh interval
+python main.py monitor --refresh 10
 ```
 
----
+### Status Information
 
-### 📦 4. Load WireGuard Kernel Module at Boot
+The status command provides:
+- **System information** (platform, architecture, Python version)
+- **Service status** (WARP, NextDNS active/inactive)
+- **Tool availability** (wgcf, wg, nextdns)
+- **Network status** (internet connectivity, WARP IP, DNS servers)
+
+### Network Diagnostics
 
 ```bash
-echo wireguard | sudo tee /etc/modules-load.d/wireguard.conf
-lsmod | grep wireguard  # confirm
+# Run network diagnostics
+python main.py interactive
+# Select option 6: Network diagnostics
 ```
 
 ---
 
-### 🧩 5. Create a Boot-Safe systemd Wrapper
+## 🔒 Security
+
+### Security Features
+
+- **Encryption key management** with secure storage
+- **SSL certificate validation** and management
+- **File permission** security checks
+- **Secure backup** creation and storage
+- **Error logging** with sensitive data protection
+
+### Security Reports
 
 ```bash
-sudo nano /etc/systemd/system/wgcf-start.service
-```
-
-Paste:
-
-```ini
-[Unit]
-Description=Safe WireGuard WARP Starter
-After=network-online.target nextdns.service
-Wants=network-online.target nextdns.service
-ConditionPathExists=/etc/wireguard/wgcf.conf
-
-[Service]
-Type=oneshot
-ExecStartPre=/sbin/modprobe wireguard
-ExecStart=/usr/bin/systemctl start wg-quick@wgcf
-ExecStartPost=/usr/bin/wg show wgcf
-RemainAfterExit=true
-
-[Install]
-WantedBy=multi-user.target
+# Generate security report
+python main.py interactive
+# Select option 8: Security report
 ```
 
 ---
 
-### 🔄 6. Enable Services
+## 📝 Logging
+
+### Log Management
+
+The application maintains comprehensive logs:
+- **Application logs** with detailed error information
+- **Service logs** for WARP and NextDNS
+- **Security logs** for access and permission events
+- **Network logs** for connectivity and performance
+
+### Viewing Logs
 
 ```bash
-sudo systemctl daemon-reexec
-sudo systemctl daemon-reload
-sudo systemctl enable wgcf-start
-sudo systemctl disable wg-quick@wgcf  # prevent race condition
-sudo systemctl enable nextdns
+# View recent logs
+python main.py logs
+
+# Interactive log viewing
+python main.py interactive
+# Select option 11: View logs
 ```
 
 ---
 
-### 🔁 7. Reboot and Verify
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **Permission Errors**
+   - Ensure you're running with administrator/root privileges
+   - Check file permissions in the configuration directory
+
+2. **Network Connectivity**
+   - Verify internet connection
+   - Check firewall settings
+   - Ensure DNS resolution is working
+
+3. **Service Failures**
+   - Check service logs for detailed error information
+   - Verify tool installation (wgcf, wg, nextdns)
+   - Ensure proper configuration files exist
+
+### Getting Help
+
+1. **Check the logs**
+   ```bash
+   python main.py logs
+   ```
+
+2. **Run diagnostics**
+   ```bash
+   python main.py interactive
+   # Select option 6: Network diagnostics
+   ```
+
+3. **Verify installation**
+   ```bash
+   python main.py status
+   ```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+### Development Setup
 
 ```bash
-sudo reboot
+# Clone the repository
+git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard
+
+# Install development dependencies
+pip install -r requirements.txt
+
+# Run tests
+python -m pytest tests/
+
+# Run linting
+python -m flake8 .
 ```
-
-After reboot:
-
-```bash
-curl https://www.cloudflare.com/cdn-cgi/trace | grep warp
-nextdns status
-```
-
-✅ Expected:
-
-- `warp=on`
-- running: NextDNS connected
-- WireGuard handshake active
 
 ---
 
-## 🙌 Credits
+## 📄 License
 
-- [`wgcf`](https://github.com/ViRb3/wgcf) by [@ViRb3](https://github.com/ViRb3)
-- [`nextdns`](https://nextdns.io)
-- WireGuard project and Cloudflare
-- Maintained by [@nightcodex7](https://github.com/nightcodex7)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📜 License
+## 🙏 Acknowledgments
 
-GNU General Public License v3
+- **Cloudflare** for WARP and WireGuard integration
+- **NextDNS** for DNS filtering and privacy features
+- **Python community** for excellent libraries and tools
+- **Contributors** who help improve this project
+
+---
+
+## 📞 Support
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/nightcodex7/warp-nextdns-wireguard/issues)
+- **Documentation**: [Wiki and guides](https://github.com/nightcodex7/warp-nextdns-wireguard/wiki)
+- **Discussions**: [Community discussions](https://github.com/nightcodex7/warp-nextdns-wireguard/discussions)
+
+---
+
+**Made with ❤️ by [@nightcodex7](https://github.com/nightcodex7)**
