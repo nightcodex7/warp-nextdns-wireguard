@@ -14,7 +14,7 @@
 
 ### 2. **Personalization Complete** ✅
 - All workflows now show "Tuhin Garai" as author
-- Git configured to use `Tuhin Garai <nightcodex7@gmail.com>`
+- Git configured to use `Tuhin Garai <64925748+nightcodex7@users.noreply.github.com>`
 - No bot references remain in any workflow
 - All workflows renamed to be WARP + NextDNS specific
 
