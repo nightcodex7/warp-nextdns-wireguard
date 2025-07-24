@@ -104,7 +104,7 @@ jobs:
           ref: main
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       
@@ -143,7 +143,7 @@ jobs:
           ref: main
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       
@@ -165,7 +165,7 @@ jobs:
           python -m build
       
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-package-${{ steps.get_version.outputs.version }}
           path: dist/
@@ -176,7 +176,7 @@ jobs:
           pyinstaller --onefile --name warp-nextdns-manager main.py
       
       - name: Upload executable
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: executable-${{ steps.get_version.outputs.version }}
           path: dist/warp-nextdns-manager*
@@ -199,24 +199,22 @@ jobs:
           echo "tag_name=v$version" >> $GITHUB_OUTPUT
       
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: release-package-${{ steps.get_version.outputs.version }}
           path: dist/
       
       - name: Download executable
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: executable-${{ steps.get_version.outputs.version }}
           path: dist/
       
       - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_version.outputs.tag_name }}
-          release_name: Release ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
           body: |
             ## 🚀 Release ${{ steps.get_version.outputs.version }}
             
@@ -244,26 +242,10 @@ jobs:
             See [CHANGELOG.md](https://github.com/nightcodex7/warp-nextdns-wireguard/blob/main/CHANGELOG.md) for detailed changes.
           draft: false
           prerelease: false
-      
-      - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/warp-nextdns-manager-${{ steps.get_version.outputs.version }}.tar.gz
-          asset_name: warp-nextdns-manager-${{ steps.get_version.outputs.version }}.tar.gz
-          asset_content_type: application/gzip
-      
-      - name: Upload Wheel
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/warp_nextdns_manager-${{ steps.get_version.outputs.version }}-py3-none-any.whl
-          asset_name: warp_nextdns_manager-${{ steps.get_version.outputs.version }}-py3-none-any.whl
-          asset_content_type: application/zip
+          files: |
+            dist/warp-nextdns-manager-${{ steps.get_version.outputs.version }}.tar.gz
+            dist/warp_nextdns_manager-${{ steps.get_version.outputs.version }}-py3-none-any.whl
+            dist/warp-nextdns-manager
 
   publish-to-pypi:
     runs-on: ubuntu-latest
@@ -271,7 +253,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: release-package-${{ steps.get_version.outputs.version }}
           path: dist/
