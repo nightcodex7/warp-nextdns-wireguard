@@ -164,18 +164,6 @@ This release represents a complete overhaul of the WARP + NextDNS Manager with s
 - **Linux**: Ubuntu, Debian, Fedora, Arch Linux
 - **macOS**: Not officially supported
 
-#### System Requirements
-- **Python**: 3.8 or higher
-- **Memory**: 512MB RAM minimum
-- **Storage**: 100MB free space
-- **Network**: Internet connection for initial setup
-
-### 🙏 Acknowledgments
-
-- **Contributors**: All contributors who helped improve this project
-- **Open Source Community**: For the excellent libraries and tools used
-- **Users**: For feedback and bug reports that helped shape this release
-
 ---
 
 ## [1.0.0] - 2025-05-21
