@@ -1,0 +1,42 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6600;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff4400;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cc3300;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="innerGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" style="stop-color:#ff8833;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#ff4400;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Dark background circle -->
+  <circle cx="256" cy="256" r="250" fill="#1a1a1a"/>
+  
+  <!-- Shield shape -->
+  <path d="M 256 60 
+           L 420 140 
+           Q 420 280 420 320
+           L 256 450
+           L 92 320
+           Q 92 280 92 140
+           Z" 
+        fill="url(#shieldGradient)" 
+        stroke="#ff3300" 
+        stroke-width="4"/>
+  
+  <!-- Inner glow effect -->
+  <path d="M 256 60 
+           L 420 140 
+           Q 420 280 420 320
+           L 256 450
+           L 92 320
+           Q 92 280 92 140
+           Z" 
+        fill="url(#innerGlow)" 
+        opacity="0.7"/>
+  
+  <!-- Center highlight -->
+  <ellipse cx="256" cy="200" rx="80" ry="60" fill="#ff8833" opacity="0.3"/>
+</svg>

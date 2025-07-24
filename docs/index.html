@@ -3,6 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon-180x180.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#ff6600">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- Performance optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    
     <title>WARP + NextDNS Manager - Enterprise-Grade VPN & DNS Security</title>
     <meta name="description" content="Cross-platform CLI tool for Cloudflare WARP tunneling with NextDNS integration. Secure your internet traffic with enterprise-grade encryption and customizable DNS filtering.">
     <link rel="stylesheet" href="styles.css?v=2.1.0">
@@ -370,6 +387,31 @@
                     }
                 });
             });
+        });
+    </script>
+
+    <!-- Performance optimizations -->
+    <script>
+        // Lazy load images
+        if ('loading' in HTMLImageElement.prototype) {
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            images.forEach(img => {
+                img.src = img.dataset.src;
+            });
+        } else {
+            // Fallback for browsers that don't support lazy loading
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
+            document.body.appendChild(script);
+        }
+        
+        // Defer non-critical scripts
+        window.addEventListener('load', function() {
+            // Load Font Awesome icons after page load
+            const fa = document.querySelector('link[href*="font-awesome"]');
+            if (fa) {
+                fa.media = 'all';
+            }
         });
     </script>
 </body>
