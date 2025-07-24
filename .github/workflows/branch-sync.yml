@@ -1,0 +1,137 @@
+name: Branch Sync Workflow
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches: [ main, testing, master ]
+  pull_request:
+    branches: [ main, testing, master ]
+    types: [ closed ]
+  workflow_dispatch:
+    inputs:
+      force_sync:
+        description: 'Force sync even with conflicts'
+        required: false
+        default: 'false'
+
+jobs:
+  sync-to-master:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true || github.event_name != 'pull_request'
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git config pull.rebase false
+    
+    - name: Sync branches to master
+      run: |
+        # Fetch all branches and tags
+        git fetch --all --tags
+        
+        # Create or checkout master branch
+        if git show-ref --verify --quiet refs/heads/master; then
+          echo "Master branch exists, checking out..."
+          git checkout master
+          git pull origin master --no-rebase || true
+        else
+          echo "Creating master branch..."
+          git checkout -b master
+        fi
+        
+        # Store current branch for priority merge
+        CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
+        echo "Current branch that triggered sync: $CURRENT_BRANCH"
+        
+        # Priority: Merge the branch that triggered this workflow first
+        if [ "$CURRENT_BRANCH" != "master" ]; then
+          echo "Priority merge: $CURRENT_BRANCH branch..."
+          git merge origin/$CURRENT_BRANCH --no-edit --strategy=recursive --strategy-option=theirs || {
+            echo "Merge conflict detected, using theirs strategy..."
+            git checkout --theirs .
+            git add -A
+            git commit --no-edit || echo "No changes to commit"
+          }
+        fi
+        
+        # Then merge other branches
+        for branch in main testing; do
+          if [ "$branch" != "$CURRENT_BRANCH" ]; then
+            echo "Merging $branch branch..."
+            git merge origin/$branch --no-edit --strategy=recursive --strategy-option=ours || {
+              echo "Merge conflict detected, keeping current version..."
+              git add -A
+              git commit --no-edit || echo "No changes to commit"
+            }
+          fi
+        done
+        
+        # Clean up based on branch rules
+        echo "Applying branch-specific rules to master..."
+        
+        # Ensure all required directories exist
+        for dir in src scripts utils tests .github .github/workflows; do
+          mkdir -p $dir
+        done
+        
+        # Remove any branch-specific files that shouldn't be in master
+        # Master should have everything, so we only remove truly unwanted files
+        find . -name "*_SUMMARY.md" -o -name "*_summary.md" -o -name "*.tmp" -o -name "*.temp" | grep -v ".git" | xargs rm -f || true
+        
+        # Commit cleanup if there are changes
+        if [ -n "$(git status --porcelain)" ]; then
+          git add -A
+          git commit -m "chore: apply branch rules and cleanup" || true
+        fi
+        
+        # Push master branch with lease for safety
+        git push origin master --force-with-lease || {
+          echo "Push failed, trying force push..."
+          if [ "${{ github.event.inputs.force_sync }}" == "true" ]; then
+            git push origin master --force
+          else
+            echo "Force push not authorized. Run workflow with force_sync=true to override."
+            exit 1
+          fi
+        }
+    
+    - name: Verify master branch integrity
+      run: |
+        git checkout master
+        echo "## Master Branch Integrity Check" >> $GITHUB_STEP_SUMMARY
+        echo "### Required directories:" >> $GITHUB_STEP_SUMMARY
+        for dir in src scripts utils tests docs .github; do
+          if [ -d "$dir" ]; then
+            echo "✅ $dir exists" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ $dir missing" >> $GITHUB_STEP_SUMMARY
+          fi
+        done
+        
+        echo "### Branch sync completed from: ${GITHUB_REF#refs/heads/}" >> $GITHUB_STEP_SUMMARY
+        echo "### Commit info:" >> $GITHUB_STEP_SUMMARY
+        echo "- Latest commit: $(git rev-parse --short HEAD)" >> $GITHUB_STEP_SUMMARY
+        echo "- Commit message: $(git log -1 --pretty=%B)" >> $GITHUB_STEP_SUMMARY
+    
+    - name: Update other branches if needed
+      if: github.ref == 'refs/heads/master'
+      run: |
+        # If master was updated directly, sync back to other branches
+        echo "Master updated directly, checking if other branches need updates..."
+        
+        # This is a safety mechanism to prevent master from diverging
+        for branch in main testing; do
+          git checkout $branch || continue
+          git merge master --no-edit --strategy=ours || true
+          git push origin $branch || true
+        done
