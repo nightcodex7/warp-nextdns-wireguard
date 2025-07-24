@@ -1,0 +1,204 @@
+name: Branch Protection Check
+
+on:
+  pull_request:
+    branches: [ main, testing, master ]
+  push:
+    branches: [ main, testing, master ]
+    tags:
+      - 'v*'
+  create:  # Trigger on branch creation
+
+jobs:
+  check-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Check for unauthorized branches
+      shell: bash
+      run: |
+        # Get all branches
+        git fetch --all
+        ALL_BRANCHES=$(git branch -r | grep -v '\->' | sed 's/origin\///' | sort -u)
+
+        # Allowed branches
+        ALLOWED_BRANCHES="main testing master"
+
+        # Check for unauthorized branches
+        UNAUTHORIZED=""
+        for branch in $ALL_BRANCHES; do
+          if ! echo "$ALLOWED_BRANCHES" | grep -q "$branch"; then
+            UNAUTHORIZED="$UNAUTHORIZED $branch"
+          fi
+        done
+
+        if [ -n "$UNAUTHORIZED" ]; then
+          echo "❌ ERROR: Unauthorized branches found:$UNAUTHORIZED"
+          echo "Only the following branches are allowed: main, testing, master"
+          exit 1
+        fi
+
+        echo "✅ Branch structure is valid"
+
+    - name: Check current branch name
+      shell: bash
+      run: |
+        CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
+        ALLOWED_BRANCHES="main testing master"
+
+        if ! echo "$ALLOWED_BRANCHES" | grep -q "$CURRENT_BRANCH"; then
+          echo "❌ ERROR: Branch '$CURRENT_BRANCH' is not allowed!"
+          echo "Only the following branches are permitted: main, testing, master"
+          exit 1
+        fi
+
+    - name: Check for prohibited files on main branch
+      if: github.ref == 'refs/heads/main'
+      shell: bash
+      run: |
+        # Check if docs directory exists
+        if [ -d "docs" ]; then
+          echo "❌ ERROR: 'docs/' directory found on main branch!"
+          echo "The docs/ directory should only exist on the testing branch."
+          exit 1
+        fi
+
+        # Check for summary files
+        SUMMARY_FILES=$(find . -name "*_SUMMARY.md" -o -name "*_summary.md" -o -name "*SUMMARY*" | grep -v ".git" || true)
+        if [ -n "$SUMMARY_FILES" ]; then
+          echo "❌ ERROR: Summary files found:"
+          echo "$SUMMARY_FILES"
+          echo "Summary files are not allowed in the repository."
+          exit 1
+        fi
+
+        # Check for temporary files
+        TEMP_FILES=$(find . -name "*.tmp" -o -name "*.temp" -o -name "*.bak" -o -name "*~" | grep -v ".git" || true)
+        if [ -n "$TEMP_FILES" ]; then
+          echo "❌ ERROR: Temporary files found:"
+          echo "$TEMP_FILES"
+          echo "Temporary files should not be committed."
+          exit 1
+        fi
+
+        # Check for development-only workflow files
+        PROHIBITED_WORKFLOWS=$(find .github/workflows -type f -name "*.yml" | grep -vE "(main-release|promote-to-main|branch-protection-check|branch-sync).yml" || true)
+        if [ -n "$PROHIBITED_WORKFLOWS" ]; then
+          echo "❌ ERROR: Development workflow files found on main branch:"
+          echo "$PROHIBITED_WORKFLOWS"
+          echo "Only main-release.yml, promote-to-main.yml, branch-protection-check.yml, and branch-sync.yml are allowed on main."
+          exit 1
+        fi
+
+        # Check for development config files
+        if [ -f ".github/pre-commit-config.yml" ] || [ -f ".github/branch-protection.yml" ]; then
+          echo "❌ ERROR: Development configuration files found on main branch!"
+          exit 1
+        fi
+
+        # Check for branch management scripts
+        if [ -f "setup-branch-protection.py" ] || [ -f "cleanup-branch-files.py" ]; then
+          echo "❌ ERROR: Branch management scripts found on main branch!"
+          echo "These scripts should only exist on the testing branch."
+          exit 1
+        fi
+
+        # Check for file versioning
+        VERSIONED_FILES=$(find . -name "*?v=*" -o -name "*_v[0-9]*" -o -name "*-v[0-9]*" | grep -v ".git" || true)
+        if [ -n "$VERSIONED_FILES" ]; then
+          echo "❌ ERROR: Files with version numbers found:"
+          echo "$VERSIONED_FILES"
+          echo "Use unified versioning through VERSION file only."
+          exit 1
+        fi
+
+        # Check for multiple VERSION files
+        VERSION_FILES=$(find . -name "VERSION*" -o -name "version*" | grep -v ".git" | grep -v "VERSIONING_RULES.md" || true)
+        VERSION_COUNT=$(echo "$VERSION_FILES" | grep -v "^$" | wc -l)
+        if [ "$VERSION_COUNT" -gt 1 ]; then
+          echo "❌ ERROR: Multiple version files found:"
+          echo "$VERSION_FILES"
+          echo "Only one VERSION file is allowed in the root directory."
+          exit 1
+        fi
+
+        # Verify proper directory structure
+        REQUIRED_DIRS=("src" "scripts" "utils" "tests")
+        for dir in "${REQUIRED_DIRS[@]}"; do
+          if [ ! -d "$dir" ]; then
+            echo "❌ ERROR: Required directory '$dir' not found!"
+            echo "Please ensure proper directory structure is maintained."
+            exit 1
+          fi
+        done
+
+        # Check that main Python files are in correct locations
+        if [ ! -f "src/main.py" ] || [ ! -f "src/cli.py" ] || [ ! -f "src/core.py" ]; then
+          echo "❌ ERROR: Core Python files not in src/ directory!"
+          echo "Expected: src/main.py, src/cli.py, src/core.py"
+          exit 1
+        fi
+
+        echo "✅ Branch protection check passed!"
+        echo "✅ Directory structure is correct!"
+        echo "✅ No prohibited files found!"
+
+    - name: Universal file checks (all branches)
+      shell: bash
+      run: |
+        # Check for summary files on any branch
+        SUMMARY_FILES=$(find . -name "*_SUMMARY.md" -o -name "*_summary.md" | grep -v ".git" || true)
+        if [ -n "$SUMMARY_FILES" ]; then
+          echo "❌ ERROR: Summary files found:"
+          echo "$SUMMARY_FILES"
+          echo "Summary files are not allowed on any branch."
+          exit 1
+        fi
+
+        # Check for temporary files
+        TEMP_FILES=$(find . -name "*.tmp" -o -name "*.temp" -o -name "*.bak" -o -name "*~" -o -name ".DS_Store" -o -name "Thumbs.db" | grep -v ".git" || true)
+        if [ -n "$TEMP_FILES" ]; then
+          echo "❌ ERROR: Temporary files found:"
+          echo "$TEMP_FILES"
+          echo "Temporary files should not be committed."
+          exit 1
+        fi
+
+        echo "✅ Universal file checks passed!"
+
+    - name: Validate release tags
+      if: startsWith(github.ref, 'refs/tags/v')
+      shell: bash
+      run: |
+        TAG="${GITHUB_REF#refs/tags/}"
+        
+        # Get the branch this tag is on
+        BRANCHES=$(git branch -r --contains "$GITHUB_SHA" | sed 's/origin\///' | grep -v HEAD | tr -d ' ')
+        
+        echo "Tag: $TAG"
+        echo "Found on branches: $BRANCHES"
+        
+        # Check if tag format matches branch requirements
+        if echo "$BRANCHES" | grep -q "main"; then
+          if [[ "$TAG" =~ (alpha|beta|rc) ]]; then
+            echo "❌ ERROR: Pre-release tag '$TAG' not allowed on main branch!"
+            echo "Beta/alpha/RC releases should be created on testing branch only."
+            exit 1
+          fi
+          echo "✅ Stable release tag on main branch - OK"
+        fi
+        
+        if echo "$BRANCHES" | grep -q "testing"; then
+          if ! [[ "$TAG" =~ (alpha|beta|rc) ]]; then
+            echo "❌ ERROR: Stable release tag '$TAG' not allowed on testing branch!"
+            echo "Stable releases should be created on main branch only."
+            exit 1
+          fi
+          echo "✅ Pre-release tag on testing branch - OK"
+        fi
+        
+        echo "✅ Release tag validation passed!"

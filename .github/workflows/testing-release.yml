@@ -1,0 +1,158 @@
+name: Testing Branch Beta Release
+
+on:
+  push:
+    branches: [ testing ]
+    tags:
+      - 'v*-beta.*'
+      - 'v*-alpha.*'
+      - 'v*-rc.*'
+  workflow_dispatch:
+    inputs:
+      create_prerelease:
+        description: 'Create a new pre-release'
+        required: false
+        default: 'false'
+      prerelease_version:
+        description: 'Pre-release version (e.g., 1.0.0-beta.1)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  validate-testing-release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/testing' || startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Checkout testing branch
+        uses: actions/checkout@v4
+      
+      - name: Validate pre-release requirements
+        run: |
+          echo "=== Testing Branch Pre-Release Validation ==="
+          
+          # Check for forbidden files
+          FORBIDDEN_FILES=$(find . -name "*_SUMMARY.md" -o -name "*_summary.md" -o -name "*.tmp" -o -name "*.temp" -o -name "*.bak" | grep -v ".git" || true)
+          if [ -n "$FORBIDDEN_FILES" ]; then
+            echo "❌ ERROR: Forbidden files found:"
+            echo "$FORBIDDEN_FILES"
+            exit 1
+          fi
+          
+          # Validate pre-release tag format
+          if [ -n "${{ github.event.inputs.prerelease_version }}" ]; then
+            VERSION="${{ github.event.inputs.prerelease_version }}"
+            if ! echo "$VERSION" | grep -E "(alpha|beta|rc)"; then
+              echo "❌ ERROR: Stable versions not allowed on testing branch!"
+              echo "Version: $VERSION"
+              echo "Use main branch for stable releases"
+              exit 1
+            fi
+            
+            # Validate semantic version format
+            if ! echo "$VERSION" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta|rc)\.[0-9]+$"; then
+              echo "❌ ERROR: Invalid pre-release version format!"
+              echo "Expected format: X.Y.Z-beta.N (e.g., 1.0.0-beta.1)"
+              exit 1
+            fi
+          fi
+          
+          echo "✅ Pre-release validation passed"
+      
+      - name: Check CHANGELOG.md
+        run: |
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "❌ ERROR: CHANGELOG.md not found!"
+            exit 1
+          fi
+          echo "✅ CHANGELOG.md exists"
+
+  create-beta-release:
+    needs: validate-testing-release
+    runs-on: ubuntu-latest
+    if: |
+      github.event.inputs.create_prerelease == 'true' || 
+      startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      
+      - name: Prepare release assets
+        run: |
+          echo "=== Preparing Beta Release Assets ==="
+          
+          # Clean any forbidden files before packaging
+          find . -name "*_SUMMARY.md" -o -name "*_summary.md" -o -name "*.tmp" -o -name "*.temp" -o -name "*.bak" -exec rm -f {} \;
+          
+          # Create release archives
+          VERSION="${{ github.event.inputs.prerelease_version || github.ref_name }}"
+          VERSION=${VERSION#v}  # Remove 'v' prefix if present
+          
+          # Create source archive
+          tar -czf "warp-nextdns-manager-${VERSION}.tar.gz" \
+            --exclude=".git" \
+            --exclude="*.pyc" \
+            --exclude="__pycache__" \
+            --exclude="*.tmp" \
+            --exclude="*_SUMMARY.md" \
+            .
+          
+          echo "✅ Release assets prepared"
+      
+      - name: Extract release notes from CHANGELOG
+        id: release_notes
+        run: |
+          VERSION="${{ github.event.inputs.prerelease_version || github.ref_name }}"
+          VERSION=${VERSION#v}
+          
+          # Extract section for this version from CHANGELOG.md
+          awk -v ver="$VERSION" '
+            /^## / && $0 ~ ver { found=1; print; next }
+            /^## / && found { exit }
+            found { print }
+          ' CHANGELOG.md > release_notes.md
+          
+          # If no specific version found, use latest entry
+          if [ ! -s release_notes.md ]; then
+            awk '/^## / { if (++count == 1) found=1 }
+                 /^## / && count > 1 { exit }
+                 found { print }' CHANGELOG.md > release_notes.md
+          fi
+          
+          # Add beta notice
+          echo -e "\n### ⚠️ Pre-Release Notice\n" >> release_notes.md
+          echo "This is a beta release for testing purposes." >> release_notes.md
+          echo "Not recommended for production use." >> release_notes.md
+          
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
+          cat release_notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create Beta Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.prerelease_version || github.ref_name }}
+          name: Beta Release v${{ github.event.inputs.prerelease_version || github.ref_name }}
+          body: ${{ steps.release_notes.outputs.RELEASE_NOTES }}
+          draft: false
+          prerelease: true
+          files: |
+            warp-nextdns-manager-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f release_notes.md
+          rm -f warp-nextdns-manager-*.tar.gz

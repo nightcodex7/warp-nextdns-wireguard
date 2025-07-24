@@ -39,6 +39,25 @@ jobs:
           echo "=== Main Branch Validation ==="
           echo "Checking for production-ready structure..."
           
+          # Check for forbidden files
+          FORBIDDEN_FILES=$(find . -name "*_SUMMARY.md" -o -name "*_summary.md" -o -name "*.tmp" -o -name "*.temp" -o -name "*.bak" | grep -v ".git" || true)
+          if [ -n "$FORBIDDEN_FILES" ]; then
+            echo "❌ ERROR: Forbidden files found:"
+            echo "$FORBIDDEN_FILES"
+            exit 1
+          fi
+          
+          # Validate release tag format if present
+          if [ -n "${{ github.event.inputs.release_version }}" ]; then
+            VERSION="${{ github.event.inputs.release_version }}"
+            if echo "$VERSION" | grep -E "(alpha|beta|rc)"; then
+              echo "❌ ERROR: Pre-release versions not allowed on main branch!"
+              echo "Version: $VERSION"
+              echo "Use testing branch for beta/alpha/rc releases"
+              exit 1
+            fi
+          fi
+          
           # Check for required production files
           required_files=(
             "README.md"
