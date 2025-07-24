@@ -49,7 +49,7 @@ coverage.xml
 .pytest_cache/
 cover/
 
-# Environments
+# Virtual environments
 .env
 .venv
 env/
@@ -57,6 +57,16 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
 
 # Project specific
 wgcf
@@ -72,19 +82,34 @@ tmp/
 cache/
 .cache/
 
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
 # Documentation builds
 docs/_build/
 site/
+mkdocs.yml
 
 # OS specific
-Thumbs.db
-ehthumbs.db
 Desktop.ini
+ehthumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*_SUMMARY.md
+*_summary.md
+
+# Branch specific files (for main branch)
+.gitignore.branch-*
+setup-branch-protection.py
+cleanup-branch-files.py
+
+# Versioning rules
+*.css?v=*
+*.js?v=*
+*_v[0-9]*
+*-v[0-9]*
+*.version
+version.txt
+VERSION.txt
+
+# Except the main VERSION file
+!VERSION
