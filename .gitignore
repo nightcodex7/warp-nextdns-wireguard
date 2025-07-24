@@ -48,6 +48,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+tests/
 
 # Virtual environments
 .env
@@ -86,6 +87,9 @@ cache/
 docs/_build/
 site/
 mkdocs.yml
+.cursor
+.idea
+.code
 
 # OS specific
 Desktop.ini
