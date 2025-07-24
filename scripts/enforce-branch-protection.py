@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Branch Protection Rules Enforcement Script
+Branch Protection Rules Enforcement Script (Final, Strict Version)
 Enforces strict branch protection rules before commits
 """
 
@@ -9,25 +9,41 @@ import sys
 import subprocess
 from pathlib import Path
 
-# Branch-specific rules
+# Branch-specific rules (Final, Strict Version)
 BRANCH_RULES = {
     'main': {
         'allowed_folders': ['src', 'utils', 'tests', '.cursor'],
         'required_files': ['README.md', 'CHANGELOG.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
         'forbidden_folders': ['docs', 'scripts'],
-        'forbidden_patterns': ['*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md']
+        'forbidden_patterns': [
+            '*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
+            'release-notes.md', 'updates.txt', '*.log', '*.tmp', '*.bak', '*.cache',
+            'experimental_*', 'local_*', 'temp_*', 'debug_*', 'staging_*'
+        ],
+        'allowed_root_scripts': ['build.py', 'release.py', 'build.sh', 'release.sh'],
+        'description': 'Primary branch for stable production releases and changelog management'
     },
     'testing': {
         'allowed_folders': ['src', 'utils', 'tests', '.cursor', 'docs', 'scripts'],
         'required_files': ['README.md', 'CHANGELOG.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
         'forbidden_folders': [],
-        'forbidden_patterns': ['*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md']
+        'forbidden_patterns': [
+            '*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
+            'release-notes.md', 'updates.txt', 'personal_*', 'temp_*', 'irrelevant_*'
+        ],
+        'allowed_root_scripts': ['*'],  # All scripts allowed in testing
+        'description': 'Beta release environment and GitHub Pages deployment'
     },
     'master': {
-        'allowed_folders': ['src', 'utils', 'tests', '.cursor', 'docs', 'scripts'],
-        'required_files': ['README.md', 'CHANGELOG.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
-        'forbidden_folders': [],
-        'forbidden_patterns': ['*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md']
+        'allowed_folders': ['src', 'utils', 'tests', '.cursor', 'scripts'],
+        'required_files': ['README.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
+        'forbidden_folders': ['docs'],  # No docs in master
+        'forbidden_patterns': [
+            '*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
+            'release-notes.md', 'updates.txt', 'redundant_*', 'outdated_*'
+        ],
+        'allowed_root_scripts': ['*'],  # All scripts allowed in master for development
+        'description': 'Central development branch with latest changes'
     }
 }
 
@@ -65,6 +81,44 @@ def check_required_files(branch_rules):
             missing.append(f"❌ Required file missing: {file}")
     return missing
 
+def check_root_scripts(branch_rules):
+    """Check root directory scripts according to branch rules"""
+    violations = []
+    current_branch = get_current_branch()
+    
+    if current_branch == 'main':
+        # In main branch, only critical release-related scripts are allowed
+        allowed_scripts = branch_rules['allowed_root_scripts']
+        for script_file in Path('.').glob('*.py'):
+            if script_file.name not in allowed_scripts:
+                violations.append(f"❌ Unauthorized root script in main branch: {script_file.name}")
+        for script_file in Path('.').glob('*.sh'):
+            if script_file.name not in allowed_scripts:
+                violations.append(f"❌ Unauthorized root script in main branch: {script_file.name}")
+    
+    return violations
+
+def check_changelog_rules():
+    """Check changelog management rules"""
+    violations = []
+    current_branch = get_current_branch()
+    
+    # Check for duplicate changelogs
+    changelog_files = list(Path('.').glob('*changelog*'))
+    if len(changelog_files) > 1:
+        violations.append(f"❌ Multiple changelog files found: {[f.name for f in changelog_files]}")
+    
+    # Check for additional release notes
+    release_note_files = list(Path('.').glob('*release*note*')) + list(Path('.').glob('*update*.txt'))
+    if release_note_files:
+        violations.append(f"❌ Additional release notes found: {[f.name for f in release_note_files]}")
+    
+    # Master branch should not have CHANGELOG.md (must be edited only in main)
+    if current_branch == 'master' and Path('CHANGELOG.md').exists():
+        violations.append("❌ CHANGELOG.md should not be in master branch (edit only in main)")
+    
+    return violations
+
 def validate_branch_structure():
     """Validate the current branch structure"""
     current_branch = get_current_branch()
@@ -77,7 +131,8 @@ def validate_branch_structure():
         return False
     
     print(f"🔍 Validating branch: {current_branch}")
-    print("=" * 50)
+    print(f"📋 Purpose: {BRANCH_RULES[current_branch]['description']}")
+    print("=" * 60)
     
     branch_rules = BRANCH_RULES[current_branch]
     violations = []
@@ -94,20 +149,34 @@ def validate_branch_structure():
     missing_files = check_required_files(branch_rules)
     violations.extend(missing_files)
     
+    # Check root scripts
+    script_violations = check_root_scripts(branch_rules)
+    violations.extend(script_violations)
+    
+    # Check changelog rules
+    changelog_violations = check_changelog_rules()
+    violations.extend(changelog_violations)
+    
     if violations:
         print("❌ Branch protection violations found:")
         for violation in violations:
             print(f"   {violation}")
         print("\n🚫 Commit blocked due to branch protection violations")
+        print("\n💡 Fix these issues before committing:")
+        print("   - Remove forbidden files/folders")
+        print("   - Ensure required files are present")
+        print("   - Follow branch-specific script policies")
+        print("   - Maintain single changelog in main branch only")
         return False
     else:
         print("✅ Branch structure validation passed")
+        print("✅ All branch protection rules satisfied")
         return True
 
 def main():
     """Main function"""
-    print("🔒 Branch Protection Rules Enforcement")
-    print("=" * 50)
+    print("🔒 Branch Protection Rules Enforcement (Final, Strict Version)")
+    print("=" * 60)
     
     if not validate_branch_structure():
         sys.exit(1)
