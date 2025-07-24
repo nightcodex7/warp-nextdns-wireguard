@@ -147,13 +147,13 @@ a:hover {
 }
 
 .nav-link {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-    color: var(--text-primary);
+    color: var(--warp-orange);
 }
 
 .btn-github, .btn-developer-support {
@@ -253,22 +253,22 @@ a:hover {
 }
 
 .btn-demo {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-weight: 500;
 }
 
 .btn-demo:hover {
-    color: var(--text-primary);
+    color: var(--warp-orange);
 }
 
 .btn-outline {
     background: transparent;
-    color: var(--text-secondary);
-    border: 1px solid var(--text-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--text-primary);
 }
 
 .btn-outline:hover {
-    background: var(--text-secondary);
+    background: var(--text-primary);
     color: var(--bg-primary);
 }
 
@@ -306,7 +306,7 @@ a:hover {
 .btn-green { background: #27ca3f; }
 
 .terminal-title {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 0.9rem;
 }
@@ -340,7 +340,7 @@ a:hover {
 
 .status-line {
     margin-bottom: 0.25rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .status-line.success {
@@ -490,7 +490,7 @@ a:hover {
 }
 
 .footer-brand-subtitle {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-weight: 500;
     margin-bottom: 1rem;
 }
@@ -521,12 +521,12 @@ a:hover {
 }
 
 .footer-column ul li a {
-    color: var(--text-muted);
+    color: var(--text-primary);
     transition: color 0.3s ease;
 }
 
 .footer-column ul li a:hover {
-    color: var(--text-primary);
+    color: var(--warp-orange);
 }
 
 .footer-bottom {
@@ -536,7 +536,7 @@ a:hover {
 }
 
 .footer-bottom p {
-    color: var(--text-muted);
+    color: var(--text-primary);
     margin-bottom: 0;
 }
 
