@@ -107,8 +107,8 @@ jobs:
                 echo "❌ Testing branch must have /docs folder for GitHub Pages"
                 exit 1
               fi
-              if [ ! -f "CHANGELOG.md" ]; then
-                echo "❌ Testing branch must have CHANGELOG.md"
+              if [ -f "CHANGELOG.md" ]; then
+                echo "❌ Testing branch should not have CHANGELOG.md (edit only in main)"
                 exit 1
               fi
               echo "✅ Testing branch validation passed"
