@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# markdown files
+CHANGELOG.md
+
 # Distribution / packaging
 .Python
 build/
