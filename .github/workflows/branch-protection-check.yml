@@ -1,0 +1,47 @@
+name: Branch Protection Check
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  check-files:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check for prohibited files on main branch
+      run: |
+        # Check if docs directory exists
+        if [ -d "docs" ]; then
+          echo "❌ ERROR: 'docs/' directory found on main branch!"
+          echo "The docs/ directory should only exist on the testing branch."
+          exit 1
+        fi
+        
+        # Check for development-only workflow files
+        PROHIBITED_WORKFLOWS=$(find .github/workflows -type f -name "*.yml" | grep -vE "(main-release|promote-to-main|branch-protection-check).yml" || true)
+        if [ -n "$PROHIBITED_WORKFLOWS" ]; then
+          echo "❌ ERROR: Development workflow files found on main branch:"
+          echo "$PROHIBITED_WORKFLOWS"
+          echo "Only main-release.yml, promote-to-main.yml, and branch-protection-check.yml are allowed on main."
+          exit 1
+        fi
+        
+        # Check for development config files
+        if [ -f ".github/pre-commit-config.yml" ] || [ -f ".github/branch-protection.yml" ]; then
+          echo "❌ ERROR: Development configuration files found on main branch!"
+          exit 1
+        fi
+        
+        # Check for test-only scripts
+        if [ -f "setup-branch-protection.py" ] || [ -f "cleanup-branch-files.py" ]; then
+          echo "❌ ERROR: Branch management scripts found on main branch!"
+          echo "These scripts should only exist on the testing branch."
+          exit 1
+        fi
+        
+        echo "✅ Branch protection check passed!"
