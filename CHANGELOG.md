@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2024-01-XX
+## [2.0.0] - 2025-07-24
 
 ### 🎉 Major Release - Complete Refactoring and Enhancement
 
@@ -92,18 +92,6 @@ This release represents a complete overhaul of the WARP + NextDNS Manager with s
 - **File Permissions**: Fixed file permission issues in build scripts
 - **Path Handling**: Improved cross-platform path handling
 
-### 🗑️ Removed
-
-#### Unwanted Files
-- `build_enhanced.py` - Replaced by unified build script
-- `build_unified.py` - Replaced by unified build script
-- `launcher.py` - Functionality integrated into main CLI
-- `etup.py` - Corrupted file removed
-- `tatus --porcelain` - Corrupted file removed
-- `ts` - Corrupted file removed
-- `test_basic.py` - Replaced by comprehensive test suite
-- `test_compatibility.py` - Functionality integrated into main test suite
-
 #### Legacy Code
 - **GUI Components**: Removed all GUI-related code (as per previous refactoring)
 - **Web Interface**: Removed Flask web interface components
@@ -174,7 +162,7 @@ This release represents a complete overhaul of the WARP + NextDNS Manager with s
 #### Supported Platforms
 - **Windows**: Windows 10/11 (64-bit)
 - **Linux**: Ubuntu, Debian, Fedora, Arch Linux
-- **macOS**: Not officially supported (removed in previous refactoring)
+- **macOS**: Not officially supported
 
 #### System Requirements
 - **Python**: 3.8 or higher
@@ -190,7 +178,7 @@ This release represents a complete overhaul of the WARP + NextDNS Manager with s
 
 ---
 
-## [1.0.0] - 2023-XX-XX
+## [1.0.0] - 2025-05-21
 
 ### Initial Release
 - Basic WARP + NextDNS integration
