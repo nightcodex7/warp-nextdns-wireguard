@@ -132,7 +132,10 @@ a:hover {
     gap: 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-primary);
+    background: linear-gradient(135deg, #f38020 0%, #8b5cf6 50%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .navbar-brand i {
@@ -199,7 +202,21 @@ a:hover {
 }
 
 .warp-text {
-    color: var(--warp-orange);
+    background: linear-gradient(135deg, #f38020 0%, #8b5cf6 50%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
 }
 
 .manager-text {
@@ -241,15 +258,24 @@ a:hover {
     font-size: 1rem;
 }
 
+.btn i {
+    transition: color 0.3s ease;
+}
+
 .btn-primary {
     background: var(--warp-orange);
-    color: var(--text-primary);
+    color: #ffffff;
 }
 
 .btn-primary:hover {
     background: #e6731a;
+    color: #ffffff;
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover i {
+    color: #ffffff;
 }
 
 .btn-demo {
@@ -269,6 +295,10 @@ a:hover {
 
 .btn-outline:hover {
     background: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.btn-outline:hover i {
     color: var(--bg-primary);
 }
 
@@ -480,7 +510,10 @@ a:hover {
     gap: 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-primary);
+    background: linear-gradient(135deg, #f38020 0%, #8b5cf6 50%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 1rem;
 }
 
