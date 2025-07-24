@@ -1,0 +1,47 @@
+name: Branch Sync Workflow
+
+on:
+  push:
+    branches: [ main, testing ]
+  workflow_dispatch:
+
+jobs:
+  sync-to-master:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+    
+    - name: Sync branches to master
+      run: |
+        # Fetch all branches
+        git fetch --all
+        
+        # Checkout master branch
+        git checkout master || git checkout -b master
+        
+        # Merge main branch
+        echo "Merging main branch..."
+        git merge origin/main --no-edit --allow-unrelated-histories || true
+        
+        # Merge testing branch
+        echo "Merging testing branch..."
+        git merge origin/testing --no-edit --allow-unrelated-histories || true
+        
+        # Push master branch
+        git push origin master --force-with-lease
+    
+    - name: Generate sync report
+      run: |
+        echo "## Branch Sync Report" >> $GITHUB_STEP_SUMMARY
+        echo "- Main branch: $(git rev-parse --short origin/main)" >> $GITHUB_STEP_SUMMARY
+        echo "- Testing branch: $(git rev-parse --short origin/testing)" >> $GITHUB_STEP_SUMMARY
+        echo "- Master branch: $(git rev-parse --short HEAD)" >> $GITHUB_STEP_SUMMARY

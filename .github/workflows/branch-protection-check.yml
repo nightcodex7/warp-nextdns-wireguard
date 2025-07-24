@@ -79,6 +79,26 @@ jobs:
           exit 1
         fi
         
+        
+        # Check for file versioning
+        VERSIONED_FILES=$(find . -name "*?v=*" -o -name "*_v[0-9]*" -o -name "*-v[0-9]*" | grep -v ".git" || true)
+        if [ -n "$VERSIONED_FILES" ]; then
+          echo "❌ ERROR: Files with version numbers found:"
+          echo "$VERSIONED_FILES"
+          echo "Use unified versioning through VERSION file only."
+          exit 1
+        fi
+        
+        # Check for multiple VERSION files
+        VERSION_FILES=$(find . -name "VERSION*" -o -name "version*" | grep -v ".git" | grep -v "VERSIONING_RULES.md" || true)
+        VERSION_COUNT=$(echo "$VERSION_FILES" | grep -v "^$" | wc -l)
+        if [ "$VERSION_COUNT" -gt 1 ]; then
+          echo "❌ ERROR: Multiple version files found:"
+          echo "$VERSION_FILES"
+          echo "Only one VERSION file is allowed in the root directory."
+          exit 1
+        fi
+
         echo "✅ Branch protection check passed!"
         echo "✅ Directory structure is correct!"
         echo "✅ No prohibited files found!"

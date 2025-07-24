@@ -101,3 +101,15 @@ ehthumbs.db
 .gitignore.branch-*
 setup-branch-protection.py
 cleanup-branch-files.py
+
+# Versioning rules
+*.css?v=*
+*.js?v=*
+*_v[0-9]*
+*-v[0-9]*
+*.version
+version.txt
+VERSION.txt
+
+# Except the main VERSION file
+!VERSION
