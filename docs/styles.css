@@ -11,10 +11,10 @@
     --bg-tertiary: #1a1a1a;
     --bg-card: #2a2a2a;
     
-    /* Text Colors */
+    /* Text Colors - Enhanced for Perfect Visibility */
     --text-primary: #ffffff;
-    --text-secondary: #e0e0e0;
-    --text-muted: #bdbdbd;
+    --text-secondary: #f5f5f5; /* Increased brightness for better readability */
+    --text-muted: #b0b0b0; /* Also increased for better contrast */
     
     /* Status Colors */
     --success: #4caf50;
