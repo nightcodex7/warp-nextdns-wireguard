@@ -1,4 +1,4 @@
-name: Promote Testing to Main
+name: WARP + NextDNS Production Promotion
 
 on:
   workflow_dispatch:

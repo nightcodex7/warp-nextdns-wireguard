@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages (DEPRECATED)
+name: WARP + NextDNS GitHub Pages
 
 on:
   push:
