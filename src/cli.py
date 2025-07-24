@@ -17,7 +17,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Prompt, Confirm
 import time
 
-from core import WarpNextDNSManager
+from .core import WarpNextDNSManager
 from utils.platform_utils import PlatformUtils
 from utils.navigation_manager import NavigationManager
 
