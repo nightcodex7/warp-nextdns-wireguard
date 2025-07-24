@@ -1,0 +1,3 @@
+.gitignore.branch-testing
+# Testing branch specific ignores
+# All files allowed on testing branch
