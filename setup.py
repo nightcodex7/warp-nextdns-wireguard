@@ -1,66 +1,52 @@
 #!/usr/bin/env python3
 """
 Setup script for WARP + NextDNS Manager
-Cross-platform CLI application for Windows and Linux
 """
+
 from setuptools import setup, find_packages
-from pathlib import Path
 
-# Read the README file
-this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text(encoding='utf-8')
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
-# Read version from VERSION file
-version_file = this_directory / "VERSION"
-version = version_file.read_text().strip() if version_file.exists() else "1.0.0"
-
-# Read requirements
-requirements_file = this_directory / "requirements.txt"
-requirements = []
-if requirements_file.exists():
-    requirements = [
-        line.strip()
-        for line in requirements_file.read_text().splitlines()
-        if line.strip() and not line.startswith("#")
-    ]
-
+with open("VERSION", "r") as f:
+    version = f.read().strip()
 
 setup(
     name="warp-nextdns-manager",
     version=version,
-    author="nightcodex7",
-    author_email="security@nightcode.dev",
-    description="Cross-platform CLI manager for Cloudflare WARP and NextDNS",
+    author="NightCodex7",
+    description="Cross-platform CLI tool for Cloudflare WARP with NextDNS integration",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/nightcodex7/warp-nextdns-wireguard",
-    project_urls={
-        "Bug Tracker": "https://github.com/nightcodex7/warp-nextdns-wireguard/issues",
-        "Documentation": "https://nightcodex7.github.io/warp-nextdns-wireguard/",
-        "Source Code": "https://github.com/nightcodex7/warp-nextdns-wireguard",
-    },
     packages=find_packages(),
+    package_dir={'': '.'},
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: System Administrators",
         "Topic :: System :: Networking",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Operating System :: OS Independent",
+        "Topic :: Security",
     ],
-    python_requires=">=3.8",
-    install_requires=requirements,
+    python_requires=">=3.7",
+    install_requires=[
+        "requests>=2.25.0",
+        "colorama>=0.4.4",
+        "psutil>=5.8.0",
+        "cryptography>=3.4.0",
+        "pyyaml>=5.4.0",
+        "rich>=10.0.0",
+        "click>=8.0.0",
+        "tabulate>=0.8.9",
+        "python-dotenv>=0.19.0",
+        "validators>=0.18.0",
+    ],
     entry_points={
         "console_scripts": [
-            "warp-nextdns=cli:cli",
+            "warp-manager=src.cli:cli",
+            "warp-nextdns=src.cli:cli",
         ],
-    },
-    include_package_data=True,
-    package_data={
-        "": ["VERSION", "README.md", "CHANGELOG.md"],
     },
 )
