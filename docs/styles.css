@@ -13,8 +13,8 @@
     
     /* Text Colors - Enhanced for Perfect Visibility */
     --text-primary: #ffffff;
-    --text-secondary: #f5f5f5; /* Increased brightness for better readability */
-    --text-muted: #b0b0b0; /* Also increased for better contrast */
+    --text-secondary: #ffffff; /* Changed to white for maximum visibility */
+    --text-muted: #e0e0e0; /* Increased brightness for better contrast */
     
     /* Status Colors */
     --success: #4caf50;
@@ -171,7 +171,7 @@ a:hover {
 .btn-github:hover, .btn-developer-support:hover {
     background: var(--nextdns-indigo);
     color: var(--text-primary);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 /* Hero Section */
@@ -270,7 +270,7 @@ a:hover {
 .btn-primary:hover {
     background: #e6731a;
     color: #ffffff;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
 
@@ -296,6 +296,7 @@ a:hover {
 .btn-outline:hover {
     background: var(--text-primary);
     color: var(--bg-primary);
+    transform: translateY(-1px);
 }
 
 .btn-outline:hover i {
@@ -399,7 +400,7 @@ a:hover {
 }
 
 .features-subtitle {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 1.1rem;
     max-width: 600px;
     margin: 0 auto;
@@ -421,7 +422,7 @@ a:hover {
 }
 
 .feature-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     border-color: var(--warp-orange);
 }
@@ -445,7 +446,7 @@ a:hover {
 }
 
 .feature-card p {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     line-height: 1.6;
 }
 
@@ -477,7 +478,7 @@ a:hover {
 }
 
 .cta-description {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 1.1rem;
     margin-bottom: 2rem;
     line-height: 1.7;
@@ -529,7 +530,7 @@ a:hover {
 }
 
 .footer-brand-description {
-    color: var(--text-muted);
+    color: var(--text-primary);
     line-height: 1.6;
 }
 
