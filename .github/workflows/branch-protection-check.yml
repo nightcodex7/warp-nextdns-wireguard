@@ -17,6 +17,7 @@ jobs:
         fetch-depth: 0
     
     - name: Check for unauthorized branches
+      shell: bash
       run: |
         # Get all branches
         git fetch --all
@@ -42,6 +43,7 @@ jobs:
         echo "✅ Branch structure is valid"
     
     - name: Check current branch name
+      shell: bash
       run: |
         CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
         ALLOWED_BRANCHES="main testing master"
@@ -54,6 +56,7 @@ jobs:
     
     - name: Check for prohibited files on main branch
       if: github.ref == 'refs/heads/main'
+      shell: bash
       run: |
         # Check if docs directory exists
         if [ -d "docs" ]; then
@@ -143,6 +146,7 @@ jobs:
         echo "✅ No prohibited files found!"
     
     - name: Universal file checks (all branches)
+      shell: bash
       run: |
         # Check for summary files on any branch
         SUMMARY_FILES=$(find . -name "*_SUMMARY.md" -o -name "*_summary.md" | grep -v ".git" || true)
