@@ -4,9 +4,19 @@ This document outlines the branch protection rules and file organization standar
 
 ## Branch Strategy
 
-The project uses a two-branch strategy:
-- **`main`** - Production-ready code only
-- **`testing`** - Development, documentation, and all features
+The project uses a three-branch strategy with priority hierarchy:
+
+```
+master (priority: complete repository)
+├── main (production code only)
+└── testing (development + docs)
+```
+
+### Branch Priority Order
+1. **Local changes** (always takes precedence)
+2. **Master branch** (complete mirror, updated from local first)
+3. **Current working branch** (main or testing)
+4. **Other branches** (merged with lower priority)
 
 ## File Organization Standards
 
@@ -14,130 +24,223 @@ The project uses a two-branch strategy:
 
 ```
 warp-nextdns-wireguard/
-├── src/                    # Source code
+├── src/                    # Source code (REQUIRED)
 │   ├── __init__.py
 │   ├── cli.py             # CLI interface
 │   ├── core.py            # Core functionality
 │   └── main.py            # Entry point
-├── scripts/               # Build and deployment scripts
+├── scripts/               # Build and deployment scripts (REQUIRED)
 │   ├── __init__.py
 │   ├── build.py
-│   └── deploy.py
-├── utils/                 # Utility modules
+│   ├── deploy.py
+│   └── sync-master-local.py  # Local master sync tool
+├── utils/                 # Utility modules (REQUIRED)
 │   └── *.py
-├── tests/                 # Test files
+├── tests/                 # Test files (REQUIRED)
 │   └── test_*.py
-├── docs/                  # Documentation (testing branch only)
+├── docs/                  # Documentation (testing/master only)
 │   ├── *.html
 │   ├── *.css
 │   └── favicon.*
-├── .github/               # GitHub workflows and configs
+├── .github/               # GitHub workflows and configs (REQUIRED)
 │   └── workflows/
-├── README.md              # Project documentation
-├── LICENSE                # License file
-├── CHANGELOG.md           # Version history
-├── requirements.txt       # Python dependencies
-├── setup.py              # Package setup
-├── pyproject.toml        # Modern Python packaging
-└── VERSION               # Version file
+├── README.md              # Project documentation (REQUIRED)
+├── LICENSE                # License file (REQUIRED)
+├── CHANGELOG.md           # Version history (REQUIRED)
+├── requirements.txt       # Python dependencies (REQUIRED)
+├── setup.py              # Package setup (REQUIRED)
+├── pyproject.toml        # Modern Python packaging (REQUIRED)
+└── VERSION               # Version file (REQUIRED)
 ```
 
-### Files NOT Allowed
+### Files NOT Allowed (Permanent Ban)
 
-The following files/patterns are **permanently banned** from the repository:
+The following files/patterns are **permanently banned** from ALL branches:
 
 1. **Summary Files**
    - `*_SUMMARY.md`
    - `*_summary.md`
+   - `*SUMMARY*` (except SETUP_SUMMARY.md if critical)
    - Any file with "summary" in the name
 
 2. **Temporary Files**
    - `*.tmp`, `*.temp`
    - `*.bak`, `*~`
    - `.DS_Store`, `Thumbs.db`
+   - `*.pyc`, `__pycache__/`
 
-3. **Branch-Specific on Main**
-   - `docs/` directory (testing branch only)
-   - Development workflows
-   - Branch management scripts
+3. **Version-Specific Files**
+   - `*?v=*` (URL parameters)
+   - `*_v[0-9]*` (version in filename)
+   - `*-v[0-9]*` (version in filename)
+   - Multiple VERSION files
 
 ## Branch-Specific Rules
 
-### Main Branch
+### Master Branch (Complete Mirror)
+**Purpose**: Complete repository with all files
+**Priority**: Highest - always updated from local first
+**Contains**: Everything from main + testing
+**Special Rules**:
+- Auto-synced on every push to main/testing
+- Local changes always take precedence
+- Serves as single source for developers
+- No direct commits (sync only)
 
+### Main Branch (Production)
 **Allowed:**
 - Source code (`src/`, `utils/`, `scripts/`)
 - Tests (`tests/`)
 - Essential documentation (README.md, LICENSE, etc.)
-- Production workflows:
+- Production workflows only:
   - `main-release.yml`
   - `promote-to-main.yml`
   - `branch-protection-check.yml`
+  - `branch-sync.yml`
 
 **NOT Allowed:**
 - `docs/` directory
 - Development workflows
 - Summary files
 - Temporary files
+- Test/development configurations
 
-### Testing Branch
-
+### Testing Branch (Development)
 **Allowed:**
 - Everything from main branch
 - `docs/` directory for GitHub Pages
 - All workflows
 - Development tools
+- Documentation files
 
-## Enforcement
+**NOT Allowed:**
+- Summary files
+- Temporary files
+- File-specific versioning
 
-### 1. .gitignore Rules
+## Enforcement Mechanisms
 
-The `.gitignore` file includes:
+### 1. Local Sync Script
+```bash
+# Sync master locally with priority
+python scripts/sync-master-local.py
+
+# Sync and push
+python scripts/sync-master-local.py --push
+```
+
+### 2. Pre-commit Hook
+The pre-commit hook enforces:
+- No docs/ on main branch
+- No summary files anywhere
+- No temporary files
+- Proper directory structure
+
+### 3. GitHub Actions
+
+#### Branch Sync Workflow
+- Triggers on push to main/testing
+- Prioritizes branch that triggered sync
+- Handles merge conflicts automatically
+- Verifies directory structure
+- Cleans unwanted files
+
+#### Branch Protection Check
+- Validates file rules on every push
+- Blocks prohibited files
+- Ensures directory structure
+- Enforces versioning rules
+
+### 4. .gitignore Rules
+Comprehensive rules including:
 ```
 *_SUMMARY.md
 *_summary.md
 *.tmp
 *.temp
-docs/  # On main branch only
+*?v=*
+docs/  # On main branch only via hook
 ```
 
-### 2. Pre-commit Hook
+## Merge Conflict Resolution
 
-A pre-commit hook prevents:
-- Pushing docs/ to main
-- Committing summary files
-- Committing temporary files
+### Priority Order:
+1. **Current working branch** (highest priority)
+2. **Master branch** (when syncing)
+3. **Other branches** (lowest priority)
 
-### 3. GitHub Workflow
+### Strategies:
+- `--strategy=recursive --strategy-option=theirs` for priority merges
+- `--strategy=recursive --strategy-option=ours` for lower priority
+- Automatic cleanup after merge
 
-The `branch-protection-check.yml` workflow validates:
-- No prohibited files on main
-- Proper directory structure
-- File naming conventions
+## File Validation Rules
 
-## File Naming Conventions
+### Required Files/Directories:
+All branches must have:
+- `src/` with main.py, cli.py, core.py
+- `scripts/` with build.py, deploy.py
+- `utils/` directory
+- `tests/` directory
+- `.github/workflows/`
+- Core documentation files
 
-1. **Python Files**: `lowercase_with_underscores.py`
-2. **Documentation**: `UPPERCASE.md` for important docs
-3. **Config Files**: Standard names (`.gitignore`, `pyproject.toml`)
-4. **No Spaces**: Use hyphens or underscores
+### Automatic Cleanup:
+The system automatically removes:
+- Summary files
+- Temporary files
+- Version-specific files
+- Empty directories (except required ones)
 
-## Import Standards
+## Best Practices
 
-With the new structure:
-```python
-# In src/main.py
-from src.cli import CLI
-from src.core import Core
+### For Developers:
+1. Always sync master locally first:
+   ```bash
+   python scripts/sync-master-local.py
+   ```
 
-# In src/cli.py
-from .core import Core  # Relative import within package
+2. Work on appropriate branch:
+   - `testing` for new features
+   - `main` for hotfixes only
+
+3. Let automation handle branch syncing
+
+### For CI/CD:
+1. Never skip branch protection checks
+2. Always verify directory structure
+3. Clean up after every merge
+4. Log all sync operations
+
+## Troubleshooting
+
+### Master Not Updating:
+```bash
+# Force local sync
+git checkout master
+git fetch --all
+git reset --hard origin/master
+python scripts/sync-master-local.py --push
 ```
+
+### Merge Conflicts:
+```bash
+# Reset to clean state
+git checkout testing
+git pull origin testing
+python scripts/sync-master-local.py
+```
+
+### File Rule Violations:
+1. Check the error message
+2. Remove prohibited files
+3. Re-run the check
+4. Commit clean state
 
 ## Summary
 
-- Keep the codebase clean and organized
-- No summary files ever
-- Documentation only on testing branch
-- Follow Python packaging standards
-- Use proper import statements
+- **Master branch** = Complete repo, local priority
+- **No summary files** = Permanently banned
+- **Unified versioning** = VERSION file only
+- **Automatic sync** = On every push
+- **Local first** = Always prioritize local changes
