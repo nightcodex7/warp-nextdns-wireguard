@@ -58,6 +58,8 @@ jobs:
             "irrelevant_*"
             "redundant_*"
             "outdated_*"
+            "CHANGELOG.md"
+            ".cursor"
           )
           
           VIOLATIONS=()
