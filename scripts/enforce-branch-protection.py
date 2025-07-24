@@ -16,7 +16,7 @@ BRANCH_RULES = {
         'required_files': ['README.md', 'CHANGELOG.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
         'forbidden_folders': ['docs', 'scripts'],
         'forbidden_patterns': [
-            '*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
+            '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
             'release-notes.md', 'updates.txt', '*.log', '*.tmp', '*.bak', '*.cache',
             'experimental_*', 'local_*', 'temp_*', 'debug_*', 'staging_*'
         ],
@@ -25,10 +25,10 @@ BRANCH_RULES = {
     },
     'testing': {
         'allowed_folders': ['src', 'utils', 'tests', '.cursor', 'docs', 'scripts'],
-        'required_files': ['README.md', 'CHANGELOG.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
+        'required_files': ['README.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
         'forbidden_folders': [],
         'forbidden_patterns': [
-            '*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
+            '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
             'release-notes.md', 'updates.txt', 'personal_*', 'temp_*', 'irrelevant_*'
         ],
         'allowed_root_scripts': ['*'],  # All scripts allowed in testing
@@ -39,7 +39,7 @@ BRANCH_RULES = {
         'required_files': ['README.md', 'LICENSE', 'setup.py', 'pyproject.toml', 'requirements.txt', 'VERSION'],
         'forbidden_folders': ['docs'],  # No docs in master
         'forbidden_patterns': [
-            '*_guide.md', '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
+            '*_summary.md', '*_rules.md', 'BRANCH_*.md', 'WORKFLOW_*.md', 'SETUP_*.md',
             'release-notes.md', 'updates.txt', 'redundant_*', 'outdated_*'
         ],
         'allowed_root_scripts': ['*'],  # All scripts allowed in master for development
