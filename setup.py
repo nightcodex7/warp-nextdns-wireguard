@@ -45,8 +45,8 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "warp-manager=src.main:main",
-            "warp-nextdns=src.main:main",
+            "warp-manager=src.cli:cli",
+            "warp-nextdns=src.cli:cli",
         ],
     },
 )

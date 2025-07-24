@@ -34,8 +34,8 @@ Homepage = "https://github.com/nightcodex7/warp-nextdns-wireguard"
 Issues = "https://github.com/nightcodex7/warp-nextdns-wireguard/issues"
 
 [project.scripts]
-warp-manager = "src.main:main"
-warp-nextdns = "src.main:main"
+warp-manager = "src.cli:cli"
+warp-nextdns = "src.cli:cli"
 
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}
