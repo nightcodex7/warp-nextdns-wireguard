@@ -1,0 +1,129 @@
+name: Branch Protection Rules Enforcement
+
+on:
+  push:
+    branches: [main, testing, master]
+  pull_request:
+    branches: [main, testing, master]
+
+jobs:
+  validate-branch-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pathlib
+          
+      - name: Run branch protection validation
+        run: |
+          if [ -f "scripts/enforce-branch-protection.py" ]; then
+            python scripts/enforce-branch-protection.py
+          else
+            echo "Branch protection script not found, skipping validation"
+          fi
+          
+      - name: Check for forbidden files
+        run: |
+          echo "Checking for forbidden files..."
+          
+          # Check for unwanted patterns
+          FORBIDDEN_PATTERNS=(
+            "*_guide.md"
+            "*_summary.md" 
+            "*_rules.md"
+            "BRANCH_*.md"
+            "WORKFLOW_*.md"
+            "SETUP_*.md"
+            "release-notes.md"
+            "updates.txt"
+            "*.log"
+            "*.tmp"
+            "*.bak"
+            "*.cache"
+            "experimental_*"
+            "local_*"
+            "temp_*"
+            "debug_*"
+            "staging_*"
+            "personal_*"
+            "irrelevant_*"
+            "redundant_*"
+            "outdated_*"
+          )
+          
+          VIOLATIONS=()
+          for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
+            if find . -name "$pattern" -type f | grep -q .; then
+              VIOLATIONS+=("Found forbidden pattern: $pattern")
+            fi
+          done
+          
+          if [ ${#VIOLATIONS[@]} -gt 0 ]; then
+            echo "❌ Branch protection violations found:"
+            for violation in "${VIOLATIONS[@]}"; do
+              echo "   $violation"
+            done
+            exit 1
+          else
+            echo "✅ No forbidden files found"
+          fi
+          
+      - name: Validate branch-specific rules
+        run: |
+          echo "Validating branch-specific rules..."
+          CURRENT_BRANCH="${{ github.ref_name }}"
+          
+          case $CURRENT_BRANCH in
+            "main")
+              echo "Validating main branch rules..."
+              if [ -d "docs" ]; then
+                echo "❌ Main branch should not have /docs folder"
+                exit 1
+              fi
+              if [ -d "scripts" ]; then
+                echo "❌ Main branch should not have /scripts folder"
+                exit 1
+              fi
+              if [ ! -f "CHANGELOG.md" ]; then
+                echo "❌ Main branch must have CHANGELOG.md"
+                exit 1
+              fi
+              echo "✅ Main branch validation passed"
+              ;;
+            "testing")
+              echo "Validating testing branch rules..."
+              if [ ! -d "docs" ]; then
+                echo "❌ Testing branch must have /docs folder for GitHub Pages"
+                exit 1
+              fi
+              if [ ! -f "CHANGELOG.md" ]; then
+                echo "❌ Testing branch must have CHANGELOG.md"
+                exit 1
+              fi
+              echo "✅ Testing branch validation passed"
+              ;;
+            "master")
+              echo "Validating master branch rules..."
+              if [ -d "docs" ]; then
+                echo "❌ Master branch should not have /docs folder"
+                exit 1
+              fi
+              if [ -f "CHANGELOG.md" ]; then
+                echo "❌ Master branch should not have CHANGELOG.md (edit only in main)"
+                exit 1
+              fi
+              echo "✅ Master branch validation passed"
+              ;;
+            *)
+              echo "⚠️  Unknown branch: $CURRENT_BRANCH"
+              ;;
+          esac 
