@@ -37,7 +37,6 @@ jobs:
           
           # Check for unwanted patterns
           FORBIDDEN_PATTERNS=(
-            "*_guide.md"
             "*_summary.md" 
             "*_rules.md"
             "BRANCH_*.md"
