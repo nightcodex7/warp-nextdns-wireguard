@@ -1,0 +1,82 @@
+name: Deploy Documentation
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+on:
+  push:
+    branches: [ testing ]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs-deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Verify docs directory
+      run: |
+        # Ensure docs directory exists
+        if [ ! -d "docs" ]; then
+          echo "❌ No docs directory found!"
+          exit 1
+        fi
+        
+        # Check for required files
+        REQUIRED_FILES=("index.html" "styles.css")
+        for file in "${REQUIRED_FILES[@]}"; do
+          if [ ! -f "docs/$file" ]; then
+            echo "❌ Missing required file: docs/$file"
+            exit 1
+          fi
+        done
+        
+        # Create .nojekyll if it doesn't exist
+        touch docs/.nojekyll
+        
+        # List docs contents
+        echo "✅ Documentation structure:"
+        ls -la docs/
+      shell: bash
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: ./docs
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+      continue-on-error: true
+      
+    - name: Deployment Status
+      if: always()
+      run: |
+        if [ "${{ steps.deployment.outcome }}" == "success" ]; then
+          echo "🌐 Documentation deployed to GitHub Pages!"
+          echo "URL: ${{ steps.deployment.outputs.page_url }}"
+        else
+          echo "⚠️ GitHub Pages deployment failed."
+          echo ""
+          echo "To enable GitHub Pages:"
+          echo "1. Go to https://github.com/nightcodex7/warp-nextdns-wireguard/settings/pages"
+          echo "2. Under 'Source', select 'GitHub Actions'"
+          echo "3. Save the settings"
+          echo "4. Re-run this workflow"
+          echo ""
+          echo "Note: The repository might need to be public for GitHub Pages to work."
+        fi
+      shell: bash 
