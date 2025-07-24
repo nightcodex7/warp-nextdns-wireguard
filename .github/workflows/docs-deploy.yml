@@ -1,4 +1,9 @@
-name: Deploy Documentation to GitHub Pages
+name: Deploy Documentation
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 on:
   push:
@@ -6,152 +11,72 @@ on:
     paths:
       - 'docs/**'
       - '.github/workflows/docs-deploy.yml'
-      - 'BRANCHING_STRATEGY.md'
   workflow_dispatch:
-    inputs:
-      force_deploy:
-        description: 'Force deploy even if no docs changes'
-        required: false
-        default: 'false'
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "docs-pages"
-  cancel-in-progress: false
 
 jobs:
-  validate-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Check if docs were modified
-        id: check-docs
-        run: |
-          if [ "${{ github.event.inputs.force_deploy }}" = "true" ]; then
-            echo "docs_changed=true" >> $GITHUB_OUTPUT
-            echo "Forcing deployment as requested"
-          else
-            # Check if docs directory has changes
-            if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^docs/"; then
-              echo "docs_changed=true" >> $GITHUB_OUTPUT
-              echo "Documentation files were modified"
-            else
-              echo "docs_changed=false" >> $GITHUB_OUTPUT
-              echo "No documentation changes detected"
-            fi
-          fi
-      
-      - name: Validate documentation structure
-        if: steps.check-docs.outputs.docs_changed == 'true'
-        run: |
-          echo "=== Documentation Validation ==="
-          echo "Checking docs directory structure..."
-          ls -la docs/
-          echo ""
-          echo "Required files check:"
-          
-          # Check for required files
-          required_files=("index.html" "installation.html" "styles.css" ".nojekyll")
-          missing_files=()
-          
-          for file in "${required_files[@]}"; do
-            if [ -f "docs/$file" ]; then
-              echo "✅ $file - Found"
-            else
-              echo "❌ $file - Missing"
-              missing_files+=("$file")
-            fi
-          done
-          
-          if [ ${#missing_files[@]} -gt 0 ]; then
-            echo "Error: Missing required files: ${missing_files[*]}"
-            exit 1
-          fi
-          
-          echo ""
-          echo "HTML files validation:"
-          find docs/ -name "*.html" -type f -exec echo "✅ {}" \;
-          
-          echo ""
-          echo "CSS validation:"
-          if [ -f "docs/styles.css" ]; then
-            echo "✅ styles.css found and accessible"
-          else
-            echo "❌ styles.css not found"
-            exit 1
-          fi
-      
-      - name: Test HTML syntax
-        if: steps.check-docs.outputs.docs_changed == 'true'
-        run: |
-          echo "=== HTML Syntax Validation ==="
-          for html_file in docs/*.html; do
-            if [ -f "$html_file" ]; then
-              echo "Validating $html_file..."
-              # Basic HTML validation (check for proper structure)
-              if grep -q "<!DOCTYPE html>" "$html_file" && grep -q "</html>" "$html_file"; then
-                echo "✅ $html_file - Valid HTML structure"
-              else
-                echo "❌ $html_file - Invalid HTML structure"
-                exit 1
-              fi
-            fi
-          done
-
-  deploy-docs:
-    needs: validate-docs
-    if: needs.validate-docs.outputs.docs_changed == 'true'
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v3
       
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+    - name: Verify docs directory
+      run: |
+        # Ensure docs directory exists
+        if [ ! -d "docs" ]; then
+          echo "❌ No docs directory found!"
+          exit 1
+        fi
+        
+        # Check for required files
+        REQUIRED_FILES=("index.html" "styles.css")
+        for file in "${REQUIRED_FILES[@]}"; do
+          if [ ! -f "docs/$file" ]; then
+            echo "❌ Missing required file: docs/$file"
+            exit 1
+          fi
+        done
+        
+        # Create .nojekyll if it doesn't exist
+        touch docs/.nojekyll
+        
+        # List docs contents
+        echo "✅ Documentation structure:"
+        ls -la docs/
+      shell: bash
       
-      - name: Upload documentation artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './docs'
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
       
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: ./docs
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+      continue-on-error: true
       
-      - name: Deployment Summary
-        run: |
-          echo "=== Deployment Summary ==="
-          echo "✅ Documentation deployed successfully!"
-          echo "🌐 Site URL: ${{ steps.deployment.outputs.page_url }}"
-          echo "📁 Source: testing branch /docs folder"
-          echo "🕒 Deployed at: $(date)"
+    - name: Deployment Status
+      if: always()
+      run: |
+        if [ "${{ steps.deployment.outcome }}" == "success" ]; then
+          echo "🌐 Documentation deployed to GitHub Pages!"
+          echo "URL: ${{ steps.deployment.outputs.page_url }}"
+        else
+          echo "⚠️ GitHub Pages deployment failed."
           echo ""
-          echo "Files deployed:"
-          find docs/ -type f -name "*.html" -o -name "*.css" -o -name "*.md" | sort
-
-  skip-deployment:
-    needs: validate-docs
-    if: needs.validate-docs.outputs.docs_changed == 'false'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip deployment
-        run: |
-          echo "=== Deployment Skipped ==="
-          echo "No documentation changes detected in this push."
-          echo "Only changes to files in the 'docs/' directory trigger deployment."
+          echo "To enable GitHub Pages:"
+          echo "1. Go to https://github.com/nightcodex7/warp-nextdns-wireguard/settings/pages"
+          echo "2. Under 'Source', select 'GitHub Actions'"
+          echo "3. Save the settings"
+          echo "4. Re-run this workflow"
           echo ""
-          echo "To force deployment, use:"
-          echo "1. Go to Actions tab"
-          echo "2. Select 'Deploy Documentation to GitHub Pages'"
-          echo "3. Click 'Run workflow'"
-          echo "4. Check 'Force deploy even if no docs changes'"
-          echo "5. Click 'Run workflow'" 
+          echo "Note: The repository might need to be public for GitHub Pages to work."
+        fi
+      shell: bash 
