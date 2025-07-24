@@ -1,15 +1,16 @@
-name: CI/CD Pipeline
+name: WARP + NextDNS CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, testing, refactor/*, feature/*, bugfix/* ]
+    branches: [ main, testing ]
   pull_request:
     branches: [ main, testing ]
-  release:
-    types: [ published ]
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'  # Run weekly on Sundays
+    inputs:
+      debug_enabled:
+        description: 'Enable debug mode'
+        required: false
+        default: 'false'
 
 jobs:
   test:
