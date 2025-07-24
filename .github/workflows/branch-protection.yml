@@ -35,31 +35,31 @@ jobs:
         run: |
           echo "Checking for forbidden files..."
           
-                     # Check for unwanted patterns
-           FORBIDDEN_PATTERNS=(
-             "*_guide.md"
-             "*_summary.md" 
-             "*_rules.md"
-             "BRANCH_*.md"
-             "WORKFLOW_*.md"
-             "SETUP_*.md"
-             "release-notes.md"
-             "updates.txt"
-             "*.log"
-             "*.tmp"
-             "*.bak"
-             "*.cache"
-             "experimental_*"
-             "local_*"
-             "temp_*"
-             "debug_*"
-             "staging_*"
-             "personal_*"
-             "irrelevant_*"
-             "redundant_*"
-             "outdated_*"
-             ".cursor"
-           )
+          # Check for unwanted patterns
+          FORBIDDEN_PATTERNS=(
+            "*_guide.md"
+            "*_summary.md" 
+            "*_rules.md"
+            "BRANCH_*.md"
+            "WORKFLOW_*.md"
+            "SETUP_*.md"
+            "release-notes.md"
+            "updates.txt"
+            "*.log"
+            "*.tmp"
+            "*.bak"
+            "*.cache"
+            "experimental_*"
+            "local_*"
+            "temp_*"
+            "debug_*"
+            "staging_*"
+            "personal_*"
+            "irrelevant_*"
+            "redundant_*"
+            "outdated_*"
+            ".cursor"
+          )
           
           VIOLATIONS=()
           for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
