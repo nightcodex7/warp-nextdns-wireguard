@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="manifest" href="site.webmanifest">
     <meta name="theme-color" content="#ff6600">
+    <!-- Mobile optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="WARP + NextDNS Manager">
+    <!-- Touch icons -->
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.svg">
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +31,147 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Additional responsive optimizations -->
+    <style>
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .sidebar {
+                order: -1;
+                margin-bottom: 2rem;
+            }
+            
+            .method-tabs, .platform-tabs, .distro-tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .method-tab, .platform-tab, .distro-tab {
+                width: 100%;
+                text-align: left;
+                padding: 1rem;
+            }
+            
+            .prerequisites-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .setup-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .troubleshooting-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .help-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .help-link {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .code-block {
+                font-size: 0.9rem;
+                overflow-x: auto;
+            }
+            
+            .code-block pre {
+                padding: 1rem;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+        }
+        
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 2fr 1fr;
+                gap: 2rem;
+            }
+            
+            .prerequisites-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .setup-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .troubleshooting-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Large screen optimizations */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+            
+            .content-grid {
+                gap: 3rem;
+            }
+            
+            .main-content {
+                font-size: 1.1rem;
+                line-height: 1.7;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .method-tab, .platform-tab, .distro-tab, .help-link, .copy-btn {
+                min-height: 44px;
+                padding: 1rem;
+            }
+            
+            .nav-link {
+                padding: 1rem 0.75rem;
+            }
+            
+            .btn-github, .btn-developer-support {
+                padding: 1rem 1.5rem;
+                min-height: 44px;
+            }
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .code-block {
+                border: 2px solid currentColor;
+            }
+            
+            .method-tab.active, .platform-tab.active, .distro-tab.active {
+                border: 2px solid currentColor;
+            }
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -41,8 +190,6 @@
                 <a href="index.html" class="nav-link">
                     <i class="fas fa-arrow-left"></i> Back to Home
                 </a>
-                <a href="index.html#features" class="nav-link">Features</a>
-                <a href="index.html#demo" class="nav-link">Demo</a>
                 <a href="https://github.com/nightcodex7/warp-nextdns-wireguard" class="btn-github" target="_blank">
                     <i class="fab fa-github"></i> GitHub
                 </a>
@@ -547,10 +694,6 @@ python cli.py logs</code></pre>
                             <h3>Getting Help</h3>
                             <p>If you need additional help:</p>
                             <div class="help-links">
-                                <a href="https://github.com/nightcodex7/warp-nextdns-wireguard/wiki" target="_blank" class="help-link">
-                                    <i class="fas fa-book"></i>
-                                    <span>Wiki Documentation</span>
-                                </a>
                                 <a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank" class="help-link">
                                     <i class="fas fa-bug"></i>
                                     <span>GitHub Issues</span>
@@ -580,7 +723,6 @@ python cli.py logs</code></pre>
                         <ul>
                             <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">GitHub Repository</a></li>
                             <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/releases" target="_blank">Latest Releases</a></li>
-                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/wiki" target="_blank">Documentation</a></li>
                             <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Report Issues</a></li>
                         </ul>
                     </div>
@@ -588,7 +730,7 @@ python cli.py logs</code></pre>
                     <div class="sidebar-section">
                         <h3>Related Services</h3>
                         <ul>
-                            <li><a href="https://www.cloudflare.com/warp/" target="_blank">Cloudflare WARP</a></li>
+                            <li><a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/" target="_blank">Cloudflare WARP</a></li>
                             <li><a href="https://nextdns.io" target="_blank">NextDNS</a></li>
                             <li><a href="https://www.wireguard.com/" target="_blank">WireGuard</a></li>
                         </ul>
@@ -644,7 +786,7 @@ python cli.py logs</code></pre>
                         <ul>
                             <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Bug Reports</a></li>
                             <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/discussions" target="_blank">Discussions</a></li>
-                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/wiki" target="_blank">Wiki</a></li>
+                            <li><a href="installation.html">Installation Guide</a></li>
                             <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues/new?template=feature_request.md" target="_blank">Feature Requests</a></li>
                         </ul>
                     </div>
