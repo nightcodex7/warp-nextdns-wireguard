@@ -46,6 +46,8 @@ jobs:
         fi
 
     - name: Run tests
+      env:
+        WARP_NEXTDNS_LOG_DIR: ${{ runner.temp }}/warp-nextdns-logs
       run: |
         python -m pytest tests/ -v --cov=src --cov-report=xml
 
@@ -76,7 +78,7 @@ jobs:
         echo "🔍 Running code quality checks..."
         
         # Check for syntax errors
-        python -m py_compile src/**/*.py
+        find src/ -name "*.py" -exec python -m py_compile {} \;
         
         # Run flake8
         flake8 src/ tests/ --max-line-length=88 --extend-ignore=E203,W503

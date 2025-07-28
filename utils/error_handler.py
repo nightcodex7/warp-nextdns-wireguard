@@ -22,7 +22,11 @@ class ErrorHandler:
         
     def _get_default_log_file(self) -> str:
         """Get default log file path"""
-        if sys.platform == "win32":
+        # Check for CI environment variable first
+        ci_log_dir = os.environ.get('WARP_NEXTDNS_LOG_DIR')
+        if ci_log_dir:
+            log_dir = Path(ci_log_dir)
+        elif sys.platform == "win32":
             log_dir = Path.home() / ".warp" / "logs"
         else:
             log_dir = Path("/var/log/warp-nextdns")
