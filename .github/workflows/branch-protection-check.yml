@@ -1,0 +1,124 @@
+name: Branch Protection Check
+
+on:
+  pull_request:
+    branches: [ main, testing, master ]
+  push:
+    branches: [ main, testing, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-branch-compliance:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check branch protection rules
+      run: |
+        echo "🔍 Checking branch protection compliance..."
+        
+        # Check if we're on a protected branch
+        if [[ "${{ github.ref }}" == "refs/heads/main" || "${{ github.ref }}" == "refs/heads/testing" || "${{ github.ref }}" == "refs/heads/master" ]]; then
+          echo "✅ Branch protection check triggered for: ${{ github.ref_name }}"
+        fi
+        
+        # Check for required files
+        echo "📁 Checking required files..."
+        required_files=("README.md" "LICENSE" "CODE_OF_CONDUCT.md" "CONTRIBUTING.md")
+        missing_files=()
+        
+        for file in "${required_files[@]}"; do
+          if [[ ! -f "$file" ]]; then
+            missing_files+=("$file")
+          fi
+        done
+        
+        if [[ ${#missing_files[@]} -gt 0 ]]; then
+          echo "❌ Missing required files: ${missing_files[*]}"
+          exit 1
+        else
+          echo "✅ All required files present"
+        fi
+        
+        # Check for docs directory (should not be in main branch)
+        if [[ "${{ github.ref_name }}" == "main" && -d "docs" ]]; then
+          echo "❌ docs/ directory should not be in main branch"
+          exit 1
+        fi
+        
+        # Check for proper author information
+        if [[ -f "AUTHORS" ]]; then
+          echo "✅ AUTHORS file found"
+        else
+          echo "⚠️  AUTHORS file missing"
+        fi
+        
+        echo "✅ Branch protection check completed successfully"
+
+  validate-workflows:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check workflow files
+      run: |
+        echo "🔍 Validating workflow files..."
+        
+        if [[ ! -d ".github/workflows" ]]; then
+          echo "❌ No .github/workflows directory found"
+          exit 1
+        fi
+        
+        workflow_count=$(find .github/workflows -name "*.yml" -o -name "*.yaml" | wc -l)
+        if [[ $workflow_count -eq 0 ]]; then
+          echo "❌ No workflow files found"
+          exit 1
+        fi
+        
+        echo "✅ Found $workflow_count workflow files"
+        
+        # Check for specific required workflows
+        required_workflows=("branch-protection-check.yml" "branch-sync.yml")
+        for workflow in "${required_workflows[@]}"; do
+          if [[ ! -f ".github/workflows/$workflow" ]]; then
+            echo "⚠️  Missing recommended workflow: $workflow"
+          else
+            echo "✅ Found workflow: $workflow"
+          fi
+        done
+
+  check-commit-messages:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Validate commit messages
+      run: |
+        echo "🔍 Checking commit message format..."
+        
+        # Get commits in this PR
+        commits=$(git log --oneline ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
+        
+        while IFS= read -r commit; do
+          commit_hash=$(echo "$commit" | cut -d' ' -f1)
+          commit_msg=$(echo "$commit" | cut -d' ' -f2-)
+          
+          # Check for conventional commit format
+          if [[ ! "$commit_msg" =~ ^(feat|fix|docs|style|refactor|test|chore|ci|build|perf|revert)(\(.+\))?: ]]; then
+            echo "⚠️  Commit $commit_hash doesn't follow conventional commit format: $commit_msg"
+          fi
+        done <<< "$commits"
+        
+        echo "✅ Commit message validation completed"

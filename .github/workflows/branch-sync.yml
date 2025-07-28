@@ -1,0 +1,144 @@
+name: Branch Sync Workflow
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches: [ main, testing ]
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: 'Source branch to sync from'
+        required: true
+        default: 'testing'
+        type: choice
+        options:
+        - testing
+        - main
+      target_branch:
+        description: 'Target branch to sync to'
+        required: true
+        default: 'master'
+        type: choice
+        options:
+        - master
+        - main
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Determine sync direction
+      id: sync
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          echo "source=${{ github.event.inputs.source_branch }}" >> $GITHUB_OUTPUT
+          echo "target=${{ github.event.inputs.target_branch }}" >> $GITHUB_OUTPUT
+        else
+          # Auto-sync based on push event
+          if [[ "${{ github.ref_name }}" == "testing" ]]; then
+            echo "source=testing" >> $GITHUB_OUTPUT
+            echo "target=master" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "source=main" >> $GITHUB_OUTPUT
+            echo "target=master" >> $GITHUB_OUTPUT
+          fi
+        fi
+        
+        echo "🔄 Syncing from ${{ steps.sync.outputs.source }} to ${{ steps.sync.outputs.target }}"
+
+    - name: Sync to target branch
+      run: |
+        source_branch="${{ steps.sync.outputs.source }}"
+        target_branch="${{ steps.sync.outputs.target }}"
+        
+        echo "🔄 Starting sync from $source_branch to $target_branch"
+        
+        # Fetch all branches
+        git fetch origin
+        
+        # Check if target branch exists
+        if ! git show-ref --verify --quiet refs/remotes/origin/$target_branch; then
+          echo "⚠️  Target branch $target_branch doesn't exist, creating it..."
+          git checkout -b $target_branch origin/$source_branch
+          git push origin $target_branch
+        else
+          # Checkout target branch
+          git checkout $target_branch
+          git pull origin $target_branch
+          
+          # Merge source branch
+          if git merge origin/$source_branch --no-edit; then
+            echo "✅ Successfully merged $source_branch into $target_branch"
+            git push origin $target_branch
+          else
+            echo "❌ Merge conflict detected"
+            git merge --abort
+            exit 1
+          fi
+        fi
+
+  enforce-branch-structure:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Enforce branch structure
+      run: |
+        echo "🔍 Enforcing branch structure rules..."
+        
+        current_branch="${{ github.ref_name }}"
+        
+        # Check if docs/ directory exists in main branch (should not)
+        if [[ "$current_branch" == "main" && -d "docs" ]]; then
+          echo "❌ docs/ directory should not be in main branch"
+          echo "This directory is for GitHub Pages and should only be in testing branch"
+          exit 1
+        fi
+        
+        # Check if docs/ directory exists in testing branch (should)
+        if [[ "$current_branch" == "testing" && ! -d "docs" ]]; then
+          echo "⚠️  docs/ directory missing in testing branch"
+          echo "This directory is needed for GitHub Pages deployment"
+        fi
+        
+        # Check for required files in all branches
+        required_files=("README.md" "LICENSE" "CODE_OF_CONDUCT.md" "CONTRIBUTING.md")
+        for file in "${required_files[@]}"; do
+          if [[ ! -f "$file" ]]; then
+            echo "❌ Missing required file: $file"
+            exit 1
+          fi
+        done
+        
+        echo "✅ Branch structure validation passed"
+
+  create-sync-summary:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Create sync summary
+      run: |
+        echo "📊 Branch Sync Summary" >> $GITHUB_STEP_SUMMARY
+        echo "=====================" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Source Branch:** ${{ steps.sync.outputs.source }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Target Branch:** ${{ steps.sync.outputs.target }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Branch synchronization completed successfully!" >> $GITHUB_STEP_SUMMARY
