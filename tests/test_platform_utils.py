@@ -1,6 +1,5 @@
 """Tests for platform utilities."""
 
-import pytest
 from utils.platform_utils import PlatformUtils
 
 

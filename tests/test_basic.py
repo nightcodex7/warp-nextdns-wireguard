@@ -5,18 +5,14 @@ import sys
 import tempfile
 import shutil
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
 # Add the project root to the path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.core import WARPNextDNSManager
 from utils.platform_utils import PlatformUtils
-from utils.installer_manager import InstallerManager
-from utils.wgcf_manager import WGCFManager
-from utils.nextdns_manager import NextDNSManager
 from utils.error_handler import ErrorHandler
 
 """
@@ -30,7 +26,7 @@ class TestImports:
     def test_core_imports(self):
         """Test core module imports"""
         try:
-            import core
+            from src import core
 
             assert core is not None
             assert hasattr(core, "WarpNextDNSManager")
@@ -40,7 +36,7 @@ class TestImports:
     def test_cli_imports(self):
         """Test CLI module imports"""
         try:
-            import cli
+            from src import cli
 
             assert cli is not None
         except ImportError as e:
@@ -135,10 +131,14 @@ class TestNavigationManager:
 
     def setup_method(self):
         """Setup test environment"""
+        from utils.navigation_manager import NavigationManager
+
         self.nav = NavigationManager(auto_mode=False)
 
     def test_auto_confirm(self):
         """Test auto confirmation"""
+        from utils.navigation_manager import NavigationManager
+
         # Test auto mode
         auto_nav = NavigationManager(auto_mode=True)
         result = auto_nav.auto_confirm("Test message", default=True)
@@ -151,6 +151,8 @@ class TestNavigationManager:
 
     def test_auto_prompt(self):
         """Test auto prompting"""
+        from utils.navigation_manager import NavigationManager
+
         # Test auto mode
         auto_nav = NavigationManager(auto_mode=True)
         result = auto_nav.auto_prompt("Test message", default="test_value")
@@ -176,9 +178,11 @@ class TestWarpNextDNSManager:
         os.environ["HOME"] = self.temp_dir
 
         # Mock the managers to avoid actual system calls
-        with patch("core.WGCFManager"), patch("core.NextDNSManager"), patch(
-            "core.InstallerManager"
-        ), patch("core.PlatformUtils"):
+        with patch("src.core.WGCFManager"), patch("src.core.NextDNSManager"), patch(
+            "src.core.InstallerManager"
+        ), patch("src.core.PlatformUtils"):
+            from src.core import WarpNextDNSManager
+
             self.manager = WarpNextDNSManager(auto_mode=False)
 
     def teardown_method(self):
@@ -291,7 +295,7 @@ class TestCLICommands:
 
     def test_cli_commands_exist(self):
         """Test that all expected CLI commands exist"""
-        import cli
+        from src import cli
 
         expected_commands = [
             "setup",
@@ -311,7 +315,7 @@ class TestCLICommands:
 
     def test_cli_group_structure(self):
         """Test CLI group structure"""
-        import cli
+        from src import cli
 
         # Test that cli is a Click group
         assert hasattr(cli, "cli")
