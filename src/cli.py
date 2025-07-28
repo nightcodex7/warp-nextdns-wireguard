@@ -10,7 +10,6 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.live import Live
-from rich.layout import Layout
 from rich.theme import Theme
 from rich.text import Text
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -19,6 +18,7 @@ import time
 
 from .core import WarpNextDNSManager
 from utils.platform_utils import PlatformUtils
+from utils.navigation_manager import NavigationManager
 
 # Custom dark theme inspired by Ghost Pass design
 custom_theme = Theme(
@@ -319,7 +319,6 @@ def monitor(ctx, refresh):
 def interactive(ctx):
     """Launch interactive mode with menu-driven interface."""
     manager = WarpNextDNSManager(auto_mode=ctx.obj.get("auto", False))
-    nav = NavigationManager(auto_mode=ctx.obj.get("auto", False))
 
     console.print(Panel("🎮 Interactive Mode", style="panel", border_style="border"))
 
@@ -523,8 +522,6 @@ def interactive(ctx):
 @click.pass_context
 def logs(ctx):
     """View application logs."""
-    manager = WarpNextDNSManager(auto_mode=ctx.obj.get("auto", False))
-
     console.print(Panel("📋 Application Logs", style="panel", border_style="border"))
 
     try:
@@ -542,8 +539,6 @@ def logs(ctx):
 @click.pass_context
 def backup(ctx, output):
     """Create a backup of current configuration."""
-    manager = WarpNextDNSManager(auto_mode=ctx.obj.get("auto", False))
-
     console.print(Panel("💾 Backup Configuration", style="panel", border_style="border"))
 
     try:
@@ -558,8 +553,6 @@ def backup(ctx, output):
 @click.pass_context
 def uninstall(ctx):
     """Uninstall WARP + NextDNS Manager."""
-    manager = WarpNextDNSManager(auto_mode=ctx.obj.get("auto", False))
-
     console.print(Panel("🗑️  Uninstall", style="panel", border_style="border"))
 
     if not Confirm.ask("Are you sure you want to uninstall WARP + NextDNS Manager?"):
