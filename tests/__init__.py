@@ -1,1 +1,1 @@
-"""Tests for WARP NextDNS Manager.""" 
+"""Tests for WARP NextDNS Manager."""
