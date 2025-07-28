@@ -42,6 +42,16 @@ jobs:
           exit 1
         fi
         
+        # Check for other essential files
+        required_files=("styles.css" "favicon.ico")
+        for file in "${required_files[@]}"; do
+          if [ ! -f "docs/$file" ]; then
+            echo "⚠️  Warning: docs/$file not found"
+          else
+            echo "✅ Found docs/$file"
+          fi
+        done
+        
         echo "✅ docs directory validation passed"
 
     - name: Upload artifact
@@ -58,4 +68,11 @@ jobs:
         echo "🚀 GitHub Pages deployment completed!"
         echo "📱 Site URL: https://warpnextmanager.nightcode.co.in/"
         echo "🔗 Repository: ${{ github.repository }}"
-        echo "🌿 Branch: ${{ github.ref_name }}" 
+        echo "🌿 Branch: ${{ github.ref_name }}"
+        
+        # Additional validation
+        if [ -n "${{ steps.deployment.outputs.page_url }}" ]; then
+          echo "✅ Deployment URL is available: ${{ steps.deployment.outputs.page_url }}"
+        else
+          echo "⚠️  Deployment URL not available, using default: https://warpnextmanager.nightcode.co.in/"
+        fi 
