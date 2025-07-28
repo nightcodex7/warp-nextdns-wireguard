@@ -1,10 +1,17 @@
+"""Basic tests for the application"""
+
+import pytest
+from unittest.mock import patch, MagicMock
+
+from src.core import WARPNextDNSManager
+from utils.platform_utils import PlatformUtils
+
 """
 Comprehensive test suite for WARP + NextDNS Manager
 """
 
 import pytest
 import sys
-import os
 import tempfile
 import shutil
 from pathlib import Path
@@ -19,7 +26,6 @@ from utils.installer_manager import InstallerManager
 from utils.wgcf_manager import WGCFManager
 from utils.nextdns_manager import NextDNSManager
 from utils.error_handler import ErrorHandler
-from utils.navigation_manager import NavigationManager
 
 
 class TestImports:
