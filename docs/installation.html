@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#ff6600">
+    <!-- Mobile optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="WARP + NextDNS Manager">
+    <!-- Touch icons -->
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.svg">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Performance optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    
+    <title>Installation Guide - WARP + NextDNS Manager</title>
+    <meta name="description" content="Complete installation guide for WARP + NextDNS Manager. Step-by-step instructions for Linux and Windows with Cloudflare WARP and NextDNS integration.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Additional responsive optimizations -->
+    <style>
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .sidebar {
+                order: -1;
+                margin-bottom: 2rem;
+            }
+            
+            .method-tabs, .platform-tabs, .distro-tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .method-tab, .platform-tab, .distro-tab {
+                width: 100%;
+                text-align: left;
+                padding: 1rem;
+            }
+            
+            .prerequisites-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .setup-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .troubleshooting-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .help-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .help-link {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .code-block {
+                font-size: 0.9rem;
+                overflow-x: auto;
+            }
+            
+            .code-block pre {
+                padding: 1rem;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+        }
+        
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 2fr 1fr;
+                gap: 2rem;
+            }
+            
+            .prerequisites-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .setup-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .troubleshooting-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Large screen optimizations */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+            
+            .content-grid {
+                gap: 3rem;
+            }
+            
+            .main-content {
+                font-size: 1.1rem;
+                line-height: 1.7;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .method-tab, .platform-tab, .distro-tab, .help-link, .copy-btn {
+                min-height: 44px;
+                padding: 1rem;
+            }
+            
+            .nav-link {
+                padding: 1rem 0.75rem;
+            }
+            
+            .btn-github, .btn-developer-support {
+                padding: 1rem 1.5rem;
+                min-height: 44px;
+            }
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .code-block {
+                border: 2px solid currentColor;
+            }
+            
+            .method-tab.active, .platform-tab.active, .distro-tab.active {
+                border: 2px solid currentColor;
+            }
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <i class="fas fa-shield-halved"></i>
+                <span>WARP + NextDNS</span>
+            </div>
+            <button class="navbar-toggle" id="navbar-toggle" aria-label="Toggle navigation menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <div class="navbar-nav" id="navbar-nav">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <a href="https://github.com/nightcodex7/warp-nextdns-wireguard" class="btn-github" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                                     <a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" class="btn-developer-support" target="_blank">
+                         <i class="fas fa-code"></i> Support Dev by solving issues
+                     </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <nav class="breadcrumb-nav">
+                    <a href="index.html" class="breadcrumb-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-current">Installation</span>
+                </nav>
+                <h1 class="page-title">Installation Guide</h1>
+                <p class="page-subtitle">Get WARP + NextDNS Manager up and running on your system with enterprise-grade security</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page Content -->
+    <section class="page-content">
+        <div class="container">
+            <div class="content-grid">
+                <div class="main-content">
+                    <!-- Quick Start Section -->
+                    <div class="content-section">
+                        <h2>Quick Start</h2>
+                        <p>WARP + NextDNS Manager is a cross-platform CLI tool that combines Cloudflare WARP's WireGuard-based encrypted tunneling with NextDNS's intelligent DNS filtering. This guide will help you set up enterprise-grade internet security on your system.</p>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="alert-content">
+                                <strong>Pro Tip:</strong> For the best experience, use the interactive setup wizard by running <code>python cli.py setup</code> after installation.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prerequisites Section -->
+                    <div class="content-section">
+                        <h2>Prerequisites</h2>
+                        <div class="prerequisites-grid">
+                            <div class="prerequisite-card">
+                                <div class="prerequisite-icon">
+                                    <i class="fab fa-python"></i>
+                                </div>
+                                <div class="prerequisite-content">
+                                    <h4>Python 3.8+</h4>
+                                    <p>Required for the CLI application</p>
+                                </div>
+                            </div>
+                            <div class="prerequisite-card">
+                                <div class="prerequisite-icon">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="prerequisite-content">
+                                    <h4>Administrator Access</h4>
+                                    <p>For service management and network configuration</p>
+                                </div>
+                            </div>
+                            <div class="prerequisite-card">
+                                <div class="prerequisite-icon">
+                                    <i class="fas fa-wifi"></i>
+                                </div>
+                                <div class="prerequisite-content">
+                                    <h4>Internet Connection</h4>
+                                    <p>For initial setup and WARP registration</p>
+                                </div>
+                            </div>
+                            <div class="prerequisite-card">
+                                <div class="prerequisite-icon">
+                                    <i class="fas fa-filter"></i>
+                                </div>
+                                <div class="prerequisite-content">
+                                    <h4>NextDNS Config ID</h4>
+                                    <p>Optional, for custom DNS filtering profiles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Installation Methods Section -->
+                    <div class="content-section">
+                        <h2>Installation Methods</h2>
+                        
+                        <div class="method-tabs">
+                            <button class="method-tab active" onclick="showMethod('python')">
+                                <i class="fab fa-python"></i>
+                                Python Package
+                            </button>
+                            <button class="method-tab" onclick="showMethod('git')">
+                                <i class="fab fa-git-alt"></i>
+                                Git Clone
+                            </button>
+                            <button class="method-tab" onclick="showMethod('pip')">
+                                <i class="fas fa-download"></i>
+                                Pip Install
+                            </button>
+                        </div>
+
+                        <!-- Python Package Method -->
+                        <div id="python" class="method-content active">
+                            <h3>Python Package Installation</h3>
+                            <p>Recommended method for most users. This installs the latest stable release.</p>
+                            
+                            <div class="step-list">
+                                <div class="step">
+                                    <div class="step-number">1</div>
+                                    <div class="step-content">
+                                        <h4>Clone the Repository</h4>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('clone-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="clone-code">git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="step">
+                                    <div class="step-number">2</div>
+                                    <div class="step-content">
+                                        <h4>Choose Your Branch</h4>
+                                        <p>Select the appropriate branch for your needs:</p>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('branch-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="branch-code"># For development/testing (latest features)
+git checkout testing
+
+# For stable releases (recommended for production)
+git checkout main</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="step">
+                                    <div class="step-number">3</div>
+                                    <div class="step-content">
+                                        <h4>Install Dependencies</h4>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('deps-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="deps-code">pip install -r requirements.txt</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="step">
+                                    <div class="step-number">4</div>
+                                    <div class="step-content">
+                                        <h4>Run Interactive Setup</h4>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('setup-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="setup-code">python cli.py setup</code></pre>
+                                        </div>
+                                        <p>The setup wizard will guide you through:</p>
+                                        <ul class="setup-features">
+                                            <li><i class="fas fa-check"></i> System detection and validation</li>
+                                            <li><i class="fas fa-check"></i> WARP registration and configuration</li>
+                                            <li><i class="fas fa-check"></i> NextDNS profile setup</li>
+                                            <li><i class="fas fa-check"></i> Service installation and testing</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Git Clone Method -->
+                        <div id="git" class="method-content">
+                            <h3>Git Clone Method</h3>
+                            <p>For developers and users who want the latest development version.</p>
+                            
+                            <div class="step-list">
+                                <div class="step">
+                                    <div class="step-number">1</div>
+                                    <div class="step-content">
+                                        <h4>Clone with Development Branch</h4>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('git-dev-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="git-dev-code">git clone -b testing https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="step">
+                                    <div class="step-number">2</div>
+                                    <div class="step-content">
+                                        <h4>Install Development Dependencies</h4>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('git-deps-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="git-deps-code">pip install -r requirements.txt
+pip install -e .</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pip Install Method -->
+                        <div id="pip" class="method-content">
+                            <h3>Pip Install Method</h3>
+                            <p>For users who prefer package manager installation (when available).</p>
+                            
+                            <div class="step-list">
+                                <div class="step">
+                                    <div class="step-number">1</div>
+                                    <div class="step-content">
+                                        <h4>Install via Pip</h4>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('pip-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="pip-code">pip install warp-nextdns-manager</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="step">
+                                    <div class="step-number">2</div>
+                                    <div class="step-content">
+                                        <h4>Run Setup</h4>
+                                        <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Terminal</span>
+                                                <button class="copy-btn" onclick="copyCode('pip-setup-code')">Copy</button>
+                                            </div>
+                                            <pre><code id="pip-setup-code">warp-nextdns setup</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Platform-Specific Instructions -->
+                    <div class="content-section">
+                        <h2>Platform-Specific Instructions</h2>
+                        
+                        <div class="platform-tabs">
+                            <button class="platform-tab active" onclick="showPlatform('linux')">
+                                <i class="fab fa-linux"></i>
+                                Linux
+                            </button>
+                            <button class="platform-tab" onclick="showPlatform('windows')">
+                                <i class="fab fa-windows"></i>
+                                Windows
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div class="alert-content">
+                                <strong>macOS Not Supported:</strong> This project is designed for Linux and Windows only. macOS users should not attempt to install this software.
+                            </div>
+                        </div>
+
+                        <!-- Linux Instructions -->
+                        <div id="linux" class="platform-content active">
+                            <h3>Linux Installation</h3>
+                            <p>Linux users get the most comprehensive feature set with native system integration.</p>
+                            
+                            <div class="distro-tabs">
+                                <button class="distro-tab active" onclick="showDistro('ubuntu')">Ubuntu/Debian</button>
+                                <button class="distro-tab" onclick="showDistro('centos')">CentOS/RHEL/Fedora</button>
+                                <button class="distro-tab" onclick="showDistro('arch')">Arch Linux</button>
+                            </div>
+
+                            <div id="ubuntu" class="distro-content active">
+                                <h4>Ubuntu/Debian</h4>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Terminal</span>
+                                        <button class="copy-btn" onclick="copyCode('ubuntu-code')">Copy</button>
+                                    </div>
+                                    <pre><code id="ubuntu-code"># Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Python and dependencies
+sudo apt install python3 python3-pip python3-venv git curl -y
+
+# Clone and setup
+git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python cli.py setup</code></pre>
+                                </div>
+                            </div>
+
+                            <div id="centos" class="distro-content">
+                                <h4>CentOS/RHEL/Fedora</h4>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Terminal</span>
+                                        <button class="copy-btn" onclick="copyCode('centos-code')">Copy</button>
+                                    </div>
+                                    <pre><code id="centos-code"># Install Python and dependencies
+sudo dnf install python3 python3-pip git curl -y
+
+# Clone and setup
+git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python cli.py setup</code></pre>
+                                </div>
+                            </div>
+
+                            <div id="arch" class="distro-content">
+                                <h4>Arch Linux</h4>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Terminal</span>
+                                        <button class="copy-btn" onclick="copyCode('arch-code')">Copy</button>
+                                    </div>
+                                    <pre><code id="arch-code"># Install Python and dependencies
+sudo pacman -S python python-pip git curl
+
+# Clone and setup
+git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python cli.py setup</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Windows Instructions -->
+                        <div id="windows" class="platform-content">
+                            <h3>Windows Installation</h3>
+                            <p>Windows users can enjoy full WARP + NextDNS integration with automatic service management.</p>
+                            
+                            <div class="windows-prerequisites">
+                                <h4>Prerequisites</h4>
+                                <ul>
+                                    <li>Windows 10/11 (64-bit)</li>
+                                    <li>Python 3.8+ installed</li>
+                                    <li>Administrator privileges</li>
+                                    <li>Git for Windows (optional)</li>
+                                </ul>
+                            </div>
+                            
+                            <h4>Installation Steps</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>PowerShell (Admin)</span>
+                                    <button class="copy-btn" onclick="copyCode('windows-code')">Copy</button>
+                                </div>
+                                <pre><code id="windows-code"># Clone repository
+git clone https://github.com/nightcodex7/warp-nextdns-wireguard.git
+cd warp-nextdns-wireguard
+
+# Create virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run setup
+python cli.py setup</code></pre>
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="alert-content">
+                                    <strong>Note:</strong> Run PowerShell as Administrator for proper service installation and network configuration.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post-Installation Setup -->
+                    <div class="content-section">
+                        <h2>Post-Installation Setup</h2>
+                        
+                        <div class="setup-grid">
+                            <div class="setup-card">
+                                <div class="setup-icon">
+                                    <i class="fas fa-shield-halved"></i>
+                                </div>
+                                <h3>WARP Configuration</h3>
+                                <p>The setup wizard will automatically handle:</p>
+                                <ul>
+                                    <li>WGCF installation and registration</li>
+                                    <li>WireGuard configuration generation</li>
+                                    <li>Service installation and startup</li>
+                                    <li>Connection testing and validation</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="setup-card">
+                                <div class="setup-icon">
+                                    <i class="fas fa-filter"></i>
+                                </div>
+                                <h3>NextDNS Configuration</h3>
+                                <p>For optimal DNS filtering:</p>
+                                <ul>
+                                    <li>Create a NextDNS account at <a href="https://nextdns.io" target="_blank">nextdns.io</a></li>
+                                    <li>Configure your filtering preferences</li>
+                                    <li>Use your configuration ID during setup</li>
+                                    <li>Test DNS resolution and filtering</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h3>Verification</h3>
+                        <p>After installation, verify everything is working:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Terminal</span>
+                                <button class="copy-btn" onclick="copyCode('verify-code')">Copy</button>
+                            </div>
+                            <pre><code id="verify-code"># Check system status
+python cli.py status
+
+# Run connection tests
+python cli.py test
+
+# View real-time logs
+python cli.py logs</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Troubleshooting -->
+                    <div class="content-section">
+                        <h2>Troubleshooting</h2>
+                        
+                        <div class="troubleshooting-grid">
+                            <div class="trouble-card">
+                                <div class="trouble-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <h4>Permission Errors</h4>
+                                <p>If you encounter permission errors:</p>
+                                <ul>
+                                    <li>Ensure you're running with administrator/root privileges</li>
+                                    <li>Check file permissions in the configuration directory</li>
+                                    <li>Verify Python installation and PATH settings</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="trouble-card">
+                                <div class="trouble-icon">
+                                    <i class="fas fa-wifi"></i>
+                                </div>
+                                <h4>Network Connectivity</h4>
+                                <p>If WARP or NextDNS isn't connecting:</p>
+                                <ul>
+                                    <li>Verify internet connection</li>
+                                    <li>Check firewall settings</li>
+                                    <li>Ensure DNS resolution is working</li>
+                                    <li>Try different WARP endpoints</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="trouble-card">
+                                <div class="trouble-icon">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <h4>Service Failures</h4>
+                                <p>If services fail to start:</p>
+                                <ul>
+                                    <li>Check service logs for detailed error information</li>
+                                    <li>Verify tool installation (wgcf, wg, nextdns)</li>
+                                    <li>Ensure proper configuration files exist</li>
+                                    <li>Restart the setup process</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="help-section">
+                            <h3>Getting Help</h3>
+                            <p>If you need additional help:</p>
+                            <div class="help-links">
+                                <a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank" class="help-link">
+                                    <i class="fas fa-bug"></i>
+                                    <span>GitHub Issues</span>
+                                </a>
+                                <a href="https://github.com/nightcodex7/warp-nextdns-wireguard/discussions" target="_blank" class="help-link">
+                                    <i class="fas fa-comments"></i>
+                                    <span>Community Discussions</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="sidebar-section">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="index.html#features">Features</a></li>
+                            <li><a href="index.html#demo">Demo</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">GitHub Repository</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/releases" target="_blank">Latest Releases</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Report Issues</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3>Related Services</h3>
+                        <ul>
+                            <li><a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/" target="_blank">Cloudflare WARP</a></li>
+                            <li><a href="https://nextdns.io" target="_blank">NextDNS</a></li>
+                            <li><a href="https://www.wireguard.com/" target="_blank">WireGuard</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3>Support the Developer</h3>
+                        <p>If this project helps you, consider supporting the developer:</p>
+                        <ul>
+                            <li><a href="https://buymeacoffee.com/nightcode" target="_blank">Buy Me a Coffee</a></li>
+                            <li><a href="https://ko-fi.com/nightcode" target="_blank">Support on Ko-fi</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/stargazers" target="_blank">Star the Project</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-brand-header">
+                        <i class="fas fa-shield-halved"></i>
+                        <span>WARP + NextDNS Manager</span>
+                    </div>
+                    <p class="footer-brand-subtitle">Enterprise-Grade Internet Security</p>
+                    <p class="footer-brand-description">Combining Cloudflare WARP's encrypted tunneling with NextDNS's intelligent filtering for maximum privacy and performance.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Project</h4>
+                        <ul>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard" target="_blank">GitHub Repository</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/releases" target="_blank">Latest Releases</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Report Issues</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/pulls" target="_blank">Pull Requests</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/wiki" target="_blank">Documentation</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/blob/main/CHANGELOG.md" target="_blank">Changelog</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues" target="_blank">Bug Reports</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/discussions" target="_blank">Discussions</a></li>
+                            <li><a href="installation.html">Installation Guide</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/issues/new?template=feature_request.md" target="_blank">Feature Requests</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Developer</h4>
+                        <ul>
+                            <li><a href="https://github.com/nightcodex7" target="_blank">@nightcodex7</a></li>
+                            <li><a href="https://buymeacoffee.com/nightcode" target="_blank">Buy Me a Coffee</a></li>
+                            <li><a href="https://ko-fi.com/nightcode" target="_blank">Support on Ko-fi</a></li>
+                            <li><a href="https://github.com/nightcodex7/warp-nextdns-wireguard/stargazers" target="_blank">Star Project</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 WARP + NextDNS Manager. Licensed under MIT License.</p>
+                    <div class="footer-bottom-links">
+                        <a href="https://nightcode.co.in" target="_blank" class="footer-brand-link">
+                            <i class="fas fa-globe"></i> nightcode.co.in
+                        </a>
+                        <span class="footer-separator">•</span>
+                        <a href="https://github.com/nightcodex7" target="_blank" class="footer-dev-link">
+                            <i class="fab fa-github"></i> @nightcodex7
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile navigation toggle
+        const navbarToggle = document.getElementById('navbar-toggle');
+        const navbarNav = document.getElementById('navbar-nav');
+        
+        navbarToggle.addEventListener('click', function() {
+            navbarNav.classList.toggle('active');
+            navbarToggle.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                navbarNav.classList.remove('active');
+                navbarToggle.classList.remove('active');
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!navbarToggle.contains(event.target) && !navbarNav.contains(event.target)) {
+                navbarNav.classList.remove('active');
+                navbarToggle.classList.remove('active');
+            }
+        });
+        
+        // Tab switching functions
+        function showMethod(methodName) {
+            // Hide all method contents
+            const methodContents = document.querySelectorAll('.method-content');
+            methodContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all method tabs
+            const methodTabs = document.querySelectorAll('.method-tab');
+            methodTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected method content
+            document.getElementById(methodName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function showPlatform(platformName) {
+            // Hide all platform contents
+            const platformContents = document.querySelectorAll('.platform-content');
+            platformContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all platform tabs
+            const platformTabs = document.querySelectorAll('.platform-tab');
+            platformTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected platform content
+            document.getElementById(platformName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function showDistro(distroName) {
+            // Hide all distro contents
+            const distroContents = document.querySelectorAll('.distro-content');
+            distroContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all distro tabs
+            const distroTabs = document.querySelectorAll('.distro-tab');
+            distroTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected distro content
+            document.getElementById(distroName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
