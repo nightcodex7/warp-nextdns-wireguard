@@ -4,6 +4,7 @@ Enhanced WARP + NextDNS Manager
 Manages Cloudflare WARP and NextDNS services via WireGuard with automatic elevation
 """
 
+import os
 import sys
 import platform
 import subprocess
@@ -12,10 +13,9 @@ import logging
 import signal
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Any
 import requests
 from rich.console import Console
-from rich.panel import Panel
 
 # Add the project root to the Python path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -31,7 +31,11 @@ from utils.error_handler import ErrorHandler
 # Configure logging
 def setup_logging():
     """Setup logging configuration with cross-platform support"""
-    if sys.platform == "win32":
+    # Check for CI environment variable first
+    ci_log_dir = os.environ.get("WARP_NEXTDNS_LOG_DIR")
+    if ci_log_dir:
+        log_dir = Path(ci_log_dir)
+    elif sys.platform == "win32":
         log_dir = Path.home() / ".warp" / "logs"
     else:
         log_dir = Path("/var/log/warp-nextdns")
