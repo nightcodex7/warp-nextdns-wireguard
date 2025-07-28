@@ -20,6 +20,12 @@ from rich.panel import Panel
 # Add the project root to the Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Import utility modules
+from utils.platform_utils import PlatformUtils
+from utils.installer_manager import InstallerManager
+from utils.wgcf_manager import WGCFManager
+from utils.nextdns_manager import NextDNSManager
+from utils.error_handler import ErrorHandler
 
 
 # Configure logging
