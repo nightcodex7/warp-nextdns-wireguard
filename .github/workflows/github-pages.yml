@@ -16,9 +16,6 @@ concurrency:
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -59,6 +56,6 @@ jobs:
     - name: Deployment status
       run: |
         echo "🚀 GitHub Pages deployment completed!"
-        echo "📱 Site URL: ${{ steps.deployment.outputs.page_url }}"
+        echo "📱 Site URL: https://warpnextmanager.nightcode.co.in/"
         echo "🔗 Repository: ${{ github.repository }}"
         echo "🌿 Branch: ${{ github.ref_name }}" 
