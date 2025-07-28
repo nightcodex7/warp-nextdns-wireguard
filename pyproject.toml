@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "warp-nextdns-manager"
 dynamic = ["version"]
 authors = [
-    {name = "NightCodex7", email = ""},
+    {name = "NightCodex7", email = "64925748+nightcodex7@users.noreply.github.com"},
 ]
 description = "Cross-platform CLI tool for Cloudflare WARP with NextDNS integration"
 readme = "README.md"
