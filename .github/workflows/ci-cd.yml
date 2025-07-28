@@ -155,9 +155,6 @@ jobs:
     permissions:
       pages: write
       id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -173,6 +170,13 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
+
+    - name: Deployment status
+      run: |
+        echo "🚀 GitHub Pages deployment completed!"
+        echo "📱 Site URL: https://warpnextmanager.nightcode.co.in/"
+        echo "🔗 Repository: ${{ github.repository }}"
+        echo "🌿 Branch: ${{ github.ref_name }}"
 
   notify:
     runs-on: ubuntu-latest
