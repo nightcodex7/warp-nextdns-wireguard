@@ -4,15 +4,12 @@ Enhanced WARP + NextDNS Manager
 Manages Cloudflare WARP and NextDNS services via WireGuard with automatic elevation
 """
 
-import os
 import sys
 import platform
 import subprocess
-import json
 import time
 import logging
 import signal
-import threading
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Any
@@ -23,11 +20,6 @@ from rich.panel import Panel
 # Add the project root to the Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.platform_utils import PlatformUtils
-from utils.installer_manager import InstallerManager
-from utils.wgcf_manager import WGCFManager
-from utils.nextdns_manager import NextDNSManager
-from utils.error_handler import ErrorHandler
 
 
 # Configure logging

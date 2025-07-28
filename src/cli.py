@@ -19,7 +19,6 @@ import time
 
 from .core import WarpNextDNSManager
 from utils.platform_utils import PlatformUtils
-from utils.navigation_manager import NavigationManager
 
 # Custom dark theme inspired by Ghost Pass design
 custom_theme = Theme(
